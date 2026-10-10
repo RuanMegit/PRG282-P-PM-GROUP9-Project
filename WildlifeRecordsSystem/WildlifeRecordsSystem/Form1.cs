@@ -178,6 +178,17 @@ namespace WildlifeRecordsSystem
             txtAnimalSpecies.Clear();
             txtRecoveryScore.Clear();
         }
+        //Method for loading information from the datagridview into inputboxes
+        private void LoadInfo(DataGridViewRow row)
+        {
+            //Tells is what is stored in the clicked cell and turns it into a string
+            txtAnimalID.Text = row.Cells[0].Value?.ToString();
+            txtAnimalName.Text = row.Cells[1].Value?.ToString();
+            txtAnimalSpecies.Text = row.Cells[2].Value?.ToString();
+            txtAnimalAge.Text = row.Cells[3].Value?.ToString();
+            txtRecoveryScore.Text = row.Cells[4].Value?.ToString();
+            EnterEditMode();
+        }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -218,14 +229,37 @@ namespace WildlifeRecordsSystem
             }
             //Which row was clicked
             DataGridViewRow clickedRow = dgvAnimals.Rows[e.RowIndex];
+            LoadInfo(clickedRow);
+        }
 
-            txtAnimalID.Text = clickedRow.Cells[0].Value?.ToString();   //Tells is what is stored in the clicked cell and turns it into a string
-            txtAnimalName.Text = clickedRow.Cells[1].Value?.ToString(); //Tells is what is stored in the clicked cell and turns it into a string
-            txtAnimalSpecies.Text = clickedRow.Cells[2].Value?.ToString();  //Tells is what is stored in the clicked cell and turns it into a string
-            txtAnimalAge.Text = clickedRow.Cells[3].Value?.ToString();  //Tells is what is stored in the clicked cell and turns it into a string
-            txtRecoveryScore.Text = clickedRow.Cells[4].Value?.ToString();  //Tells is what is stored in the clicked cell and turns it into a string
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string searchID = txtSearch.Text.Trim();
 
-            EnterEditMode();
+            
+
+            if (string.IsNullOrWhiteSpace(searchID))
+            {
+                MessageBox.Show("Enter an animal ID", "Search box", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            //loops through entire datagridview
+            foreach (DataGridViewRow row in dgvAnimals.Rows)
+            {
+                string rowID = row.Cells[0].Value?.ToString();  //RowID is declared to compare
+                
+
+                if (string.Equals(rowID, searchID, StringComparison.OrdinalIgnoreCase)) //Ignores case sensitive inputs)
+                {
+                    LoadInfo(row);
+                    return;
+                    //takes the values from the searched ID
+                }
+            }
+            //Shows an error if the record wasnt found
+            MessageBox.Show($"The Record {searchID} was not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+
         }
     }
 }
