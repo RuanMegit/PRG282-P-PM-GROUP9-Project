@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WildlifeRecordsSystem
 {
@@ -157,26 +156,30 @@ namespace WildlifeRecordsSystem
             }
         }
 
+        //method enters edit mode and disables sensitive buttons and input boxes
         public void EnterEditMode()
         {
-            txtAnimalID.ReadOnly = true;   //removes he option to change the ID
+            txtAnimalID.ReadOnly = true;   //removes the option to change the ID
             btnAdd.Enabled = false;         //The add button is disabled to prevent duplicates being created
             btnSaveChanges.Enabled = true;  //Enables the save changes button
         }
 
+        //Method exists edit mode and clears all input boxes
         public void ExitEditMode()
         {
             txtAnimalID.ReadOnly = false;   //disables read only on the input box after editing
             btnAdd.Enabled = true;          //The add button is enabled after editing
             btnSaveChanges.Enabled = false; //Save changes only enables when in editing mode
+
+            //Clears the editboxes when exiting editmode
+            txtAnimalID.Clear();
+            txtAnimalAge.Clear();
+            txtAnimalName.Clear();
+            txtAnimalSpecies.Clear();
+            txtRecoveryScore.Clear();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnUpdate_Click(object sender, EventArgs e)
         {
 
         }
@@ -191,11 +194,6 @@ namespace WildlifeRecordsSystem
 
         }
 
-        private void dgvAnimals_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private void frmView_Load(object sender, EventArgs e)
         {
 
@@ -203,26 +201,31 @@ namespace WildlifeRecordsSystem
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            if (txtAnimalID.ReadOnly == true)
-            {
-                txtAnimalAge.Text = "";
-                txtAnimalName.Text = "";
-                txtAnimalAge.Text = "";
-                txtAnimalSpecies.Text = "";
-                txtRecoveryScore.Text = "";
-            }
-            else 
-            {
-                txtAnimalID.Text = "";
+            ExitEditMode();      
+        }
 
-                txtAnimalAge.Text = "";
-                txtAnimalName.Text = "";
-                txtAnimalAge.Text = "";
-                txtAnimalSpecies.Text = "";
-                txtRecoveryScore.Text = "";
-            }
-            
+        private void btnSaveChanges_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void dgvAnimals_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //Simply ignores clicks on the header
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+            //Which row was clicked
+            DataGridViewRow clickedRow = dgvAnimals.Rows[e.RowIndex];
+
+            txtAnimalID.Text = clickedRow.Cells[0].Value?.ToString();   //Tells is what is stored in the clicked cell and turns it into a string
+            txtAnimalName.Text = clickedRow.Cells[1].Value?.ToString(); //Tells is what is stored in the clicked cell and turns it into a string
+            txtAnimalSpecies.Text = clickedRow.Cells[2].Value?.ToString();  //Tells is what is stored in the clicked cell and turns it into a string
+            txtAnimalAge.Text = clickedRow.Cells[3].Value?.ToString();  //Tells is what is stored in the clicked cell and turns it into a string
+            txtRecoveryScore.Text = clickedRow.Cells[4].Value?.ToString();  //Tells is what is stored in the clicked cell and turns it into a string
+
+            EnterEditMode();
         }
     }
 }
