@@ -167,7 +167,8 @@ namespace WildlifeRecordsSystem
         public void ExitEditMode()
         {
             txtAnimalID.ReadOnly = false;   //disables read only on the input box after editing
-            btnAdd.Enabled = true;         //The add button is enabled after editing
+            btnAdd.Enabled = true;          //The add button is enabled after editing
+            btnSaveChanges.Enabled = false; //Save changes only enables when in editing mode
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
