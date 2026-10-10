@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WildlifeRecordsSystem
 {
@@ -156,6 +157,19 @@ namespace WildlifeRecordsSystem
             }
         }
 
+        public void EnterEditMode()
+        {
+            txtAnimalID.ReadOnly = true;   //removes he option to change the ID
+            btnAdd.Enabled = false;         //The add button is disabled to prevent duplicates being created
+            btnSaveChanges.Enabled = true;  //Enables the save changes button
+        }
+
+        public void ExitEditMode()
+        {
+            txtAnimalID.ReadOnly = false;   //disables read only on the input box after editing
+            btnAdd.Enabled = true;         //The add button is enabled after editing
+        }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
 
@@ -183,6 +197,30 @@ namespace WildlifeRecordsSystem
 
         private void frmView_Load(object sender, EventArgs e)
         {
+
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            if (txtAnimalID.ReadOnly == true)
+            {
+                txtAnimalAge.Text = "";
+                txtAnimalName.Text = "";
+                txtAnimalAge.Text = "";
+                txtAnimalSpecies.Text = "";
+                txtRecoveryScore.Text = "";
+            }
+            else 
+            {
+                txtAnimalID.Text = "";
+
+                txtAnimalAge.Text = "";
+                txtAnimalName.Text = "";
+                txtAnimalAge.Text = "";
+                txtAnimalSpecies.Text = "";
+                txtRecoveryScore.Text = "";
+            }
+            
 
         }
     }
