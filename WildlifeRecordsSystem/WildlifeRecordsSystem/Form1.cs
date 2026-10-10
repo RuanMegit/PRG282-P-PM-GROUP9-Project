@@ -164,7 +164,7 @@ namespace WildlifeRecordsSystem
             btnSaveChanges.Enabled = true;  //Enables the save changes button
         }
 
-        //Method exists edit mode and clears all input boxes
+        //Method exits edit mode and clears all input boxes
         public void ExitEditMode()
         {
             txtAnimalID.ReadOnly = false;   //disables read only on the input box after editing
@@ -210,16 +210,55 @@ namespace WildlifeRecordsSystem
 
         }
 
+        //Clears the inputboxes
         private void btnClear_Click(object sender, EventArgs e)
         {
-            ExitEditMode();      
+            ExitEditMode();  
+            
         }
 
+        //Save the changes permanently towards the text file and the data grid view
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
+            string name = txtAnimalName.Text.Trim();
+            string species = txtAnimalSpecies.Text.Trim();
+
+            //If statement for validating input box inputs
+            if (name.Length < 1 || name.Length > 30 || name.Contains("|"))
+            {
+                MessageBox.Show("Name must be between 1 and 30 characters and not contain '|'.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtAnimalName.Focus();
+                return;
+            }
+
+            //If statement for validating input box inputs
+            if (species.Length < 1 || species.Length > 30 || species.Contains("|"))
+            {
+                MessageBox.Show("Species must be between 1 and 30 characters and not contain '|'.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtAnimalSpecies.Focus();
+                return;
+            }
+
+            //If statement for validating input box inputs
+            if (!int.TryParse(txtAnimalAge.Text.Trim(), out int age)|| age < 0 || age > 100)
+            {
+                MessageBox.Show("Age must be a whole number between 1 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtAnimalAge.Focus();
+                return;
+            }
+
+            //If statement for validating input box inputs
+            if (!int.TryParse(txtRecoveryScore.Text.Trim(), out int recoveryscore) || recoveryscore < 0 || recoveryscore > 100)
+            {
+                MessageBox.Show("Recovery Score must be a whole number between 1 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtRecoveryScore.Focus();
+                return;
+            }
+
 
         }
 
+        //Allows you to edit a record that you clicked
         private void dgvAnimals_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             //Simply ignores clicks on the header
@@ -232,6 +271,7 @@ namespace WildlifeRecordsSystem
             LoadInfo(clickedRow);
         }
 
+        //Allows you to search for an animal ID
         private void btnSearch_Click(object sender, EventArgs e)
         {
             string searchID = txtSearch.Text.Trim();
@@ -241,6 +281,7 @@ namespace WildlifeRecordsSystem
             if (string.IsNullOrWhiteSpace(searchID))
             {
                 MessageBox.Show("Enter an animal ID", "Search box", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
 
             //loops through entire datagridview
@@ -249,16 +290,15 @@ namespace WildlifeRecordsSystem
                 string rowID = row.Cells[0].Value?.ToString();  //RowID is declared to compare
                 
 
-                if (string.Equals(rowID, searchID, StringComparison.OrdinalIgnoreCase)) //Ignores case sensitive inputs)
+                if (string.Equals(rowID, searchID, StringComparison.OrdinalIgnoreCase)) //Ignores case sensitive inputs
                 {
                     LoadInfo(row);
                     return;
-                    //takes the values from the searched ID
                 }
             }
             //Shows an error if the record wasnt found
             MessageBox.Show($"The Record {searchID} was not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
+            txtSearch.Clear();
 
         }
     }

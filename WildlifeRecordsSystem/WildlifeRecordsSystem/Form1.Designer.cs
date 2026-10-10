@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnSummaryReport = new System.Windows.Forms.Button();
@@ -60,7 +60,7 @@
             // 
             this.btnAdd.Location = new System.Drawing.Point(9, 400);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(110, 23);
+            this.btnAdd.Size = new System.Drawing.Size(132, 23);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
@@ -68,9 +68,9 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(9, 439);
+            this.btnDelete.Location = new System.Drawing.Point(7, 439);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(110, 23);
+            this.btnDelete.Size = new System.Drawing.Size(134, 23);
             this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -89,14 +89,14 @@
             // dgvAnimals
             // 
             this.dgvAnimals.BackgroundColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvAnimals.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvAnimals.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvAnimals.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAnimals.GridColor = System.Drawing.SystemColors.ControlText;
             this.dgvAnimals.Location = new System.Drawing.Point(311, 67);
@@ -127,35 +127,35 @@
             // 
             // txtAnimalID
             // 
-            this.txtAnimalID.Location = new System.Drawing.Point(123, 211);
+            this.txtAnimalID.Location = new System.Drawing.Point(135, 211);
             this.txtAnimalID.Name = "txtAnimalID";
             this.txtAnimalID.Size = new System.Drawing.Size(170, 22);
             this.txtAnimalID.TabIndex = 6;
             // 
             // txtAnimalName
             // 
-            this.txtAnimalName.Location = new System.Drawing.Point(123, 244);
+            this.txtAnimalName.Location = new System.Drawing.Point(135, 244);
             this.txtAnimalName.Name = "txtAnimalName";
             this.txtAnimalName.Size = new System.Drawing.Size(170, 22);
             this.txtAnimalName.TabIndex = 7;
             // 
             // txtAnimalSpecies
             // 
-            this.txtAnimalSpecies.Location = new System.Drawing.Point(123, 280);
+            this.txtAnimalSpecies.Location = new System.Drawing.Point(135, 280);
             this.txtAnimalSpecies.Name = "txtAnimalSpecies";
             this.txtAnimalSpecies.Size = new System.Drawing.Size(170, 22);
             this.txtAnimalSpecies.TabIndex = 8;
             // 
             // txtAnimalAge
             // 
-            this.txtAnimalAge.Location = new System.Drawing.Point(123, 318);
+            this.txtAnimalAge.Location = new System.Drawing.Point(135, 318);
             this.txtAnimalAge.Name = "txtAnimalAge";
             this.txtAnimalAge.Size = new System.Drawing.Size(170, 22);
             this.txtAnimalAge.TabIndex = 9;
             // 
             // txtRecoveryScore
             // 
-            this.txtRecoveryScore.Location = new System.Drawing.Point(123, 356);
+            this.txtRecoveryScore.Location = new System.Drawing.Point(135, 356);
             this.txtRecoveryScore.Name = "txtRecoveryScore";
             this.txtRecoveryScore.Size = new System.Drawing.Size(170, 22);
             this.txtRecoveryScore.TabIndex = 10;
@@ -218,9 +218,9 @@
             // btnSaveChanges
             // 
             this.btnSaveChanges.Enabled = false;
-            this.btnSaveChanges.Location = new System.Drawing.Point(148, 400);
+            this.btnSaveChanges.Location = new System.Drawing.Point(163, 400);
             this.btnSaveChanges.Name = "btnSaveChanges";
-            this.btnSaveChanges.Size = new System.Drawing.Size(110, 23);
+            this.btnSaveChanges.Size = new System.Drawing.Size(142, 23);
             this.btnSaveChanges.TabIndex = 17;
             this.btnSaveChanges.Text = "Save Changes";
             this.btnSaveChanges.UseVisualStyleBackColor = true;
@@ -228,9 +228,9 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(148, 439);
+            this.btnClear.Location = new System.Drawing.Point(163, 439);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(110, 23);
+            this.btnClear.Size = new System.Drawing.Size(142, 23);
             this.btnClear.TabIndex = 18;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
