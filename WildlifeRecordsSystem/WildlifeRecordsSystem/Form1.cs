@@ -190,6 +190,36 @@ namespace WildlifeRecordsSystem
             EnterEditMode();
         }
 
+        private void StatusCalculation(int score, out string status, out string housingunit)
+        {
+            if (score <= 19)
+            {
+                status = ("Critical");
+                housingunit = ("Intensive Care Unit");
+            }
+            else if (score <= 39)
+            {
+                status = ("Serious");
+                housingunit = ("High-Dependency Ward");
+            }
+            else if (score <= 59)
+            {
+                status = ("Stable");
+                housingunit = ("Recovery Ward");
+            }
+            else if (score <= 79)
+            {
+                status = ("Recovering");
+                housingunit = ("Outdoor Enclosure");
+            }
+            else
+            {
+                status = ("Release-Ready");
+                housingunit = ("Pre-Release Camp");
+            }
+
+        }
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
 
@@ -263,12 +293,11 @@ namespace WildlifeRecordsSystem
                 return;
             }
 
-            string status = "Not-Finished";          // temporary
-            string housingUnit = "Not-Finished";     // temporary
+            StatusCalculation(recoveryscore, out string status, out string housingunit);
 
             //captures id again
             string id = txtAnimalID.Text.Trim().ToUpper();
-            string newanimal = $"{id}|{name}|{species}|{age}|{recoveryscore}|{status}|{housingUnit}";
+            string newAnimalline = $"{id}|{name}|{species}|{age}|{recoveryscore}|{status}|{housingunit}";
 
             string path = Path.Combine(Application.StartupPath, "animals.txt"); //file path towards text file
 
@@ -283,7 +312,7 @@ namespace WildlifeRecordsSystem
 
                     if (string.Equals(part[0].Trim(), id, StringComparison.OrdinalIgnoreCase))
                     {
-                        animal[i] = newanimal;
+                        animal[i] = newAnimalline;
                         break;
                     }
                 }
