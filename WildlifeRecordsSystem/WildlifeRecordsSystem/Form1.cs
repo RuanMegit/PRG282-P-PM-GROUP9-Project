@@ -220,6 +220,14 @@ namespace WildlifeRecordsSystem
         //Save the changes permanently towards the text file and the data grid view
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtAnimalID.Text))
+            {
+                MessageBox.Show("Select an animal first", "Save Changes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+
+            //captures name and species variables
             string name = txtAnimalName.Text.Trim();
             string species = txtAnimalSpecies.Text.Trim();
 
@@ -240,9 +248,9 @@ namespace WildlifeRecordsSystem
             }
 
             //If statement for validating input box inputs
-            if (!int.TryParse(txtAnimalAge.Text.Trim(), out int age)|| age < 0 || age > 100)
+            if (!int.TryParse(txtAnimalAge.Text.Trim(), out int age) || age < 0 || age > 100)
             {
-                MessageBox.Show("Age must be a whole number between 1 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Age must be a whole number between 0 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtAnimalAge.Focus();
                 return;
             }
@@ -250,12 +258,60 @@ namespace WildlifeRecordsSystem
             //If statement for validating input box inputs
             if (!int.TryParse(txtRecoveryScore.Text.Trim(), out int recoveryscore) || recoveryscore < 0 || recoveryscore > 100)
             {
-                MessageBox.Show("Recovery Score must be a whole number between 1 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Recovery Score must be a whole number between 0 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtRecoveryScore.Focus();
                 return;
             }
 
+            string status = "Not-Finished";          // temporary
+            string housingUnit = "Not-Finished";     // temporary
 
+            //captures id again
+            string id = txtAnimalID.Text.Trim().ToUpper();
+            string newanimal = $"{id}|{name}|{species}|{age}|{recoveryscore}|{status}|{housingUnit}";
+
+            string path = Path.Combine(Application.StartupPath, "animals.txt"); //file path towards text file
+
+            try
+            {
+                string[] animal = File.ReadAllLines(path, Encoding.UTF8);  //read all lines
+
+                //Checks where the ID's match in the text file and the new changed animal values
+                for (int i = 0; i < animal.Length; i++)
+                {
+                    string[] part = animal[i].Split('|');
+
+                    if (string.Equals(part[0].Trim(), id, StringComparison.OrdinalIgnoreCase))
+                    {
+                        animal[i] = newanimal;
+                        break;
+                    }
+                }
+                File.WriteAllLines(path, animal, Encoding.UTF8);
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("animals.txt could not be found.", "File error");
+                return;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                MessageBox.Show("The folder containing animals.txt could not be found.", "File error");
+                return;
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("animals.txt is in use by another program. Please close it and try again.", "File error");
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("You do not have permission to read animals.txt.", "File error");
+                return;
+            }
+
+            LoadAnimals();  //refreshed the grid from the file
+            ExitEditMode(); //Exits editing mode
         }
 
         //Allows you to edit a record that you clicked
