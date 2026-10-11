@@ -24,6 +24,7 @@ namespace WildlifeRecordsSystem
 
         public void SetupDataGridView()
         {
+
             // Requirement 2.3: The grid is read-only: users cannot edit cells, add rows or delete rows directly in it. Clicking a cell selects the whole row.Records appear in the same order as in the file.
             dgvAnimals.Columns.Clear();
 
@@ -44,6 +45,7 @@ namespace WildlifeRecordsSystem
             dgvAnimals.Columns.Add("Status", "Status");
             dgvAnimals.Columns.Add("HousingUnit", "Housing Unit");
 
+           
             /* Requirment 2.4: The grid refreshes automatically after every add, update and delete, without restarting the program and without duplicate rows. 
             we must add this code at the end to the Add and update and deltet feature when that feature is implemented
             datagridview1.update();
@@ -166,9 +168,34 @@ namespace WildlifeRecordsSystem
 
         }
 
+        //Requirement 4.1: The user can select a row and delete it. The program removes the record from the grid and from animals.txt. If no row is selected, show an error message.
         private void btnDelete_Click(object sender, EventArgs e)
         {
+           
+            if (dgvAnimals.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a row to delete.", "Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (dgvAnimals.SelectedRows.Count == 1)
+            {
+                DataGridViewRow selectedRow = dgvAnimals.SelectedRows[0];
+                string animalIdToDelete = selectedRow.Cells["AnimalID"].Value.ToString();
+                string animalNameToDelete = selectedRow.Cells["Name"].Value.ToString();
 
+
+                DialogResult result = MessageBox.Show("Delete " + animalIdToDelete + "(" + animalNameToDelete + ")? This cannot be undone.",
+                    "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    
+                    // Remove the record from animals.txt
+                    string filePath = Path.Combine(Application.StartupPath, "animals.txt");
+                    var lines = File.ReadAllLines(filePath, Encoding.UTF8).Where(line => !line.StartsWith(animalIdToDelete + "|")).ToArray();
+                    File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                    LoadAnimals(); // Refresh the DataGridView after deletion
+                }
+            }
         }
 
         private void btnSummaryReport_Click(object sender, EventArgs e)
