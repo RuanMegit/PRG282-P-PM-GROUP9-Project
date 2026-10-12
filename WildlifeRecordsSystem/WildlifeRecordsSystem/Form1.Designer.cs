@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnSummaryReport = new System.Windows.Forms.Button();
@@ -58,9 +58,9 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(9, 400);
+            this.btnAdd.Location = new System.Drawing.Point(10, 400);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(132, 23);
+            this.btnAdd.Size = new System.Drawing.Size(142, 23);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.Text = "Add";
             this.btnAdd.UseVisualStyleBackColor = true;
@@ -68,9 +68,9 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(7, 439);
+            this.btnDelete.Location = new System.Drawing.Point(10, 429);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(134, 23);
+            this.btnDelete.Size = new System.Drawing.Size(142, 23);
             this.btnDelete.TabIndex = 2;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -78,9 +78,9 @@
             // 
             // btnSummaryReport
             // 
-            this.btnSummaryReport.Location = new System.Drawing.Point(893, 512);
+            this.btnSummaryReport.Location = new System.Drawing.Point(10, 458);
             this.btnSummaryReport.Name = "btnSummaryReport";
-            this.btnSummaryReport.Size = new System.Drawing.Size(155, 23);
+            this.btnSummaryReport.Size = new System.Drawing.Size(295, 23);
             this.btnSummaryReport.TabIndex = 3;
             this.btnSummaryReport.Text = "Summary Report";
             this.btnSummaryReport.UseVisualStyleBackColor = true;
@@ -89,21 +89,21 @@
             // dgvAnimals
             // 
             this.dgvAnimals.BackgroundColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvAnimals.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvAnimals.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvAnimals.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAnimals.GridColor = System.Drawing.SystemColors.ControlText;
             this.dgvAnimals.Location = new System.Drawing.Point(311, 67);
             this.dgvAnimals.Name = "dgvAnimals";
             this.dgvAnimals.RowHeadersWidth = 51;
             this.dgvAnimals.RowTemplate.Height = 24;
-            this.dgvAnimals.Size = new System.Drawing.Size(737, 411);
+            this.dgvAnimals.Size = new System.Drawing.Size(1005, 414);
             this.dgvAnimals.TabIndex = 4;
             this.dgvAnimals.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAnimals_CellClick);
             // 
@@ -228,7 +228,7 @@
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(163, 439);
+            this.btnClear.Location = new System.Drawing.Point(163, 429);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(142, 23);
             this.btnClear.TabIndex = 18;
@@ -277,7 +277,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
-            this.ClientSize = new System.Drawing.Size(1084, 558);
+            this.ClientSize = new System.Drawing.Size(1345, 497);
             this.Controls.Add(this.lblAnimalSearch);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.txtSearch);
