@@ -24,6 +24,7 @@ namespace WildlifeRecordsSystem
 
         public void SetupDataGridView()
         {
+
             // Requirement 2.3: The grid is read-only: users cannot edit cells, add rows or delete rows directly in it. Clicking a cell selects the whole row.Records appear in the same order as in the file.
             dgvAnimals.Columns.Clear();
 
@@ -44,6 +45,7 @@ namespace WildlifeRecordsSystem
             dgvAnimals.Columns.Add("Status", "Status");
             dgvAnimals.Columns.Add("HousingUnit", "Housing Unit");
 
+           
             /* Requirment 2.4: The grid refreshes automatically after every add, update and delete, without restarting the program and without duplicate rows. 
             we must add this code at the end to the Add and update and deltet feature when that feature is implemented
             datagridview1.update();
@@ -126,7 +128,11 @@ namespace WildlifeRecordsSystem
 
                     // if user input an lowercase id it is still acceptable, we just change the text to uppercase
                     dgvAnimals.Rows.Add(id.ToUpper(), name, species, age, score, status, housing);
+
+                   
                 }
+
+              
 
                 // Reporting skipped lines from the reading of the animals.txt file once after loading finishes.
                 if (skipCount > 0)
@@ -225,9 +231,53 @@ namespace WildlifeRecordsSystem
 
         }
 
+        //Handles the Delete button: asks for confirmation, removes the selected animal from animals.txt, refreshes the grid and clears the form if that animal was loaded
         private void btnDelete_Click(object sender, EventArgs e)
         {
+           
+            if (dgvAnimals.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a row to delete.", "Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (dgvAnimals.SelectedRows.Count == 1)
+            {
+                DataGridViewRow selectedRow = dgvAnimals.SelectedRows[0];
+                string animalIdToDelete = selectedRow.Cells["AnimalID"].Value.ToString();
+                string animalNameToDelete = selectedRow.Cells["Name"].Value.ToString();
 
+                //Delete confirmation message box to prevent accidental deletion
+                DialogResult result = MessageBox.Show("Delete " + animalIdToDelete + " (" + animalNameToDelete + ")? This cannot be undone.",
+                    "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    try
+                    {
+                        // Remove the record from animals.txt
+                        string filePath = Path.Combine(Application.StartupPath, "animals.txt");
+                        var lines = File.ReadAllLines(filePath, Encoding.UTF8).Where(line => !line.StartsWith(animalIdToDelete + "|", StringComparison.OrdinalIgnoreCase)).ToArray();
+                        File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                    }
+                    catch (IOException)
+                    { 
+                        MessageBox.Show("animals.txt could not be updated. It may be open in another program.", "File error");
+                        return;
+                    }
+                    catch (UnauthorizedAccessException)
+                    { 
+                        MessageBox.Show("Access denied to modify animals.txt.", "File error"); 
+                        return;
+                    }
+                    
+                 
+                    LoadAnimals(); // Refresh the DataGridView after deletion
+
+                    if(string.Equals(txtAnimalID.Text.Trim(), animalIdToDelete, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ExitEditMode(); // Clear input boxes if the deleted record was being edited
+                    }
+                }
+            }
         }
 
         private void btnSummaryReport_Click(object sender, EventArgs e)
@@ -385,6 +435,13 @@ namespace WildlifeRecordsSystem
             MessageBox.Show($"The Record {searchID} was not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             txtSearch.Clear();
 
+        }
+
+        private void frmView_Shown(object sender, EventArgs e)
+        {
+            //Deselect the automatically selected first row so "no row selected" is possible
+            dgvAnimals.ClearSelection();
+            dgvAnimals.CurrentCell = null;
         }
     }
 }
