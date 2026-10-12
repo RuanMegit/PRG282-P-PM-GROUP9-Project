@@ -156,12 +156,71 @@ namespace WildlifeRecordsSystem
             }
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        //method enters edit mode and disables sensitive buttons and input boxes
+        public void EnterEditMode()
         {
+            txtAnimalID.ReadOnly = true;   //removes the option to change the ID
+            btnAdd.Enabled = false;         //The add button is disabled to prevent duplicates being created
+            btnSaveChanges.Enabled = true;  //Enables the save changes button
+        }
+
+        //Method exits edit mode and clears all input boxes
+        public void ExitEditMode()
+        {
+            txtAnimalID.ReadOnly = false;   //disables read only on the input box after editing
+            btnAdd.Enabled = true;          //The add button is enabled after editing
+            btnSaveChanges.Enabled = false; //Save changes only enables when in editing mode
+
+            //Clears the editboxes when exiting editmode
+            txtAnimalID.Clear();
+            txtAnimalAge.Clear();
+            txtAnimalName.Clear();
+            txtAnimalSpecies.Clear();
+            txtRecoveryScore.Clear();
+        }
+        //Method for loading information from the datagridview into inputboxes
+        private void LoadInfo(DataGridViewRow row)
+        {
+            //Tells is what is stored in the clicked cell and turns it into a string
+            txtAnimalID.Text = row.Cells[0].Value?.ToString();
+            txtAnimalName.Text = row.Cells[1].Value?.ToString();
+            txtAnimalSpecies.Text = row.Cells[2].Value?.ToString();
+            txtAnimalAge.Text = row.Cells[3].Value?.ToString();
+            txtRecoveryScore.Text = row.Cells[4].Value?.ToString();
+            EnterEditMode();
+        }
+
+        private void StatusCalculation(int score, out string status, out string housingunit)
+        {
+            if (score <= 19)
+            {
+                status = ("Critical");
+                housingunit = ("Intensive Care Unit");
+            }
+            else if (score <= 39)
+            {
+                status = ("Serious");
+                housingunit = ("High-Dependency Ward");
+            }
+            else if (score <= 59)
+            {
+                status = ("Stable");
+                housingunit = ("Recovery Ward");
+            }
+            else if (score <= 79)
+            {
+                status = ("Recovering");
+                housingunit = ("Outdoor Enclosure");
+            }
+            else
+            {
+                status = ("Release-Ready");
+                housingunit = ("Pre-Release Camp");
+            }
 
         }
 
-        private void btnUpdate_Click(object sender, EventArgs e)
+        private void btnAdd_Click(object sender, EventArgs e)
         {
 
         }
@@ -176,13 +235,155 @@ namespace WildlifeRecordsSystem
 
         }
 
-        private void dgvAnimals_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void frmView_Load(object sender, EventArgs e)
         {
 
         }
 
-        private void frmView_Load(object sender, EventArgs e)
+        //Clears the inputboxes
+        private void btnClear_Click(object sender, EventArgs e)
         {
+            ExitEditMode();  
+            
+        }
+
+        //Save the changes permanently towards the text file and the data grid view
+        private void btnSaveChanges_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtAnimalID.Text))
+            {
+                MessageBox.Show("Select an animal first", "Save Changes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+
+            //captures name and species variables
+            string name = txtAnimalName.Text.Trim();
+            string species = txtAnimalSpecies.Text.Trim();
+
+            //If statement for validating input box inputs
+            if (name.Length < 1 || name.Length > 30 || name.Contains("|"))
+            {
+                MessageBox.Show("Name must be between 1 and 30 characters and not contain '|'.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtAnimalName.Focus();
+                return;
+            }
+
+            //If statement for validating input box inputs
+            if (species.Length < 1 || species.Length > 30 || species.Contains("|"))
+            {
+                MessageBox.Show("Species must be between 1 and 30 characters and not contain '|'.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtAnimalSpecies.Focus();
+                return;
+            }
+
+            //If statement for validating input box inputs
+            if (!int.TryParse(txtAnimalAge.Text.Trim(), out int age) || age < 0 || age > 100)
+            {
+                MessageBox.Show("Age must be a whole number between 0 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtAnimalAge.Focus();
+                return;
+            }
+
+            //If statement for validating input box inputs
+            if (!int.TryParse(txtRecoveryScore.Text.Trim(), out int recoveryscore) || recoveryscore < 0 || recoveryscore > 100)
+            {
+                MessageBox.Show("Recovery Score must be a whole number between 0 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtRecoveryScore.Focus();
+                return;
+            }
+
+            StatusCalculation(recoveryscore, out string status, out string housingunit);
+
+            //captures id again
+            string id = txtAnimalID.Text.Trim().ToUpper();
+            string newAnimalline = $"{id}|{name}|{species}|{age}|{recoveryscore}|{status}|{housingunit}";
+
+            string path = Path.Combine(Application.StartupPath, "animals.txt"); //file path towards text file
+
+            try
+            {
+                string[] animal = File.ReadAllLines(path, Encoding.UTF8);  //read all lines
+
+                //Checks where the ID's match in the text file and the new changed animal values
+                for (int i = 0; i < animal.Length; i++)
+                {
+                    string[] part = animal[i].Split('|');
+
+                    if (string.Equals(part[0].Trim(), id, StringComparison.OrdinalIgnoreCase))
+                    {
+                        animal[i] = newAnimalline;
+                        break;
+                    }
+                }
+                File.WriteAllLines(path, animal, Encoding.UTF8);
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("animals.txt could not be found.", "File error");
+                return;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                MessageBox.Show("The folder containing animals.txt could not be found.", "File error");
+                return;
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("animals.txt is in use by another program. Please close it and try again.", "File error");
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MessageBox.Show("You do not have permission to read animals.txt.", "File error");
+                return;
+            }
+
+            LoadAnimals();  //refreshed the grid from the file
+            ExitEditMode(); //Exits editing mode
+        }
+
+        //Allows you to edit a record that you clicked
+        private void dgvAnimals_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //Simply ignores clicks on the header
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+            //Which row was clicked
+            DataGridViewRow clickedRow = dgvAnimals.Rows[e.RowIndex];
+            LoadInfo(clickedRow);
+        }
+
+        //Allows you to search for an animal ID
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string searchID = txtSearch.Text.Trim();
+
+            
+
+            if (string.IsNullOrWhiteSpace(searchID))
+            {
+                MessageBox.Show("Enter an animal ID", "Search box", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            //loops through entire datagridview
+            foreach (DataGridViewRow row in dgvAnimals.Rows)
+            {
+                string rowID = row.Cells[0].Value?.ToString();  //RowID is declared to compare
+                
+
+                if (string.Equals(rowID, searchID, StringComparison.OrdinalIgnoreCase)) //Ignores case sensitive inputs
+                {
+                    LoadInfo(row);
+                    return;
+                }
+            }
+            //Shows an error if the record wasnt found
+            MessageBox.Show($"The Record {searchID} was not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtSearch.Clear();
 
         }
     }
