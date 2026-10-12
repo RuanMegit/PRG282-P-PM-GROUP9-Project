@@ -263,7 +263,168 @@
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // lblAnimalSearch
+            //  feature/add-animal
+ Updated upstream
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.label1.Location = new System.Drawing.Point(385, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(333, 18);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Baobab Ridge Wildlife Rehabilitation Records System";
+            this.lblHeading.AutoSize = true;
+            this.lblHeading.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblHeading.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblHeading.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHeading.Location = new System.Drawing.Point(249, 19);
+            this.lblHeading.Name = "lblHeading";
+            this.lblHeading.Size = new System.Drawing.Size(694, 34);
+            this.lblHeading.TabIndex = 5;
+            this.lblHeading.Text = "Baobab Ridge Wildlife Rehabilitation Records System";
             // 
+            // txtAnimalID
+            // 
+            this.txtAnimalID.Location = new System.Drawing.Point(135, 211);
+            this.txtAnimalID.Name = "txtAnimalID";
+            this.txtAnimalID.Size = new System.Drawing.Size(170, 22);
+            this.txtAnimalID.TabIndex = 6;
+            // 
+            // txtAnimalName
+            // 
+            this.txtAnimalName.Location = new System.Drawing.Point(135, 244);
+            this.txtAnimalName.Name = "txtAnimalName";
+            this.txtAnimalName.Size = new System.Drawing.Size(170, 22);
+            this.txtAnimalName.TabIndex = 7;
+            // 
+            // txtAnimalSpecies
+            // 
+            this.txtAnimalSpecies.Location = new System.Drawing.Point(135, 280);
+            this.txtAnimalSpecies.Name = "txtAnimalSpecies";
+            this.txtAnimalSpecies.Size = new System.Drawing.Size(170, 22);
+            this.txtAnimalSpecies.TabIndex = 8;
+            // 
+            // txtAnimalAge
+            // 
+            this.txtAnimalAge.Location = new System.Drawing.Point(135, 318);
+            this.txtAnimalAge.Name = "txtAnimalAge";
+            this.txtAnimalAge.Size = new System.Drawing.Size(170, 22);
+            this.txtAnimalAge.TabIndex = 9;
+            // 
+            // txtRecoveryScore
+            // 
+            this.txtRecoveryScore.Location = new System.Drawing.Point(135, 356);
+            this.txtRecoveryScore.Name = "txtRecoveryScore";
+            this.txtRecoveryScore.Size = new System.Drawing.Size(170, 22);
+            this.txtRecoveryScore.TabIndex = 10;
+            // 
+            // lblID
+            // 
+            this.lblID.AutoSize = true;
+            this.lblID.Location = new System.Drawing.Point(6, 214);
+            this.lblID.Name = "lblID";
+            this.lblID.Size = new System.Drawing.Size(26, 16);
+            this.lblID.TabIndex = 11;
+            this.lblID.Text = "ID :";
+            this.lblID.Click += new System.EventHandler(this.lblID_Click);
+            // 
+            // lblName
+            // 
+            this.lblName.AutoSize = true;
+            this.lblName.Location = new System.Drawing.Point(6, 247);
+            this.lblName.Name = "lblName";
+            this.lblName.Size = new System.Drawing.Size(50, 16);
+            this.lblName.TabIndex = 12;
+            this.lblName.Text = "Name :";
+            // 
+            // lblSpecies
+            // 
+            this.lblSpecies.AutoSize = true;
+            this.lblSpecies.Location = new System.Drawing.Point(6, 283);
+            this.lblSpecies.Name = "lblSpecies";
+            this.lblSpecies.Size = new System.Drawing.Size(60, 16);
+            this.lblSpecies.TabIndex = 13;
+            this.lblSpecies.Text = "Species:";
+            // 
+            // lblAge
+            // 
+            this.lblAge.AutoSize = true;
+            this.lblAge.Location = new System.Drawing.Point(6, 321);
+            this.lblAge.Name = "lblAge";
+            this.lblAge.Size = new System.Drawing.Size(38, 16);
+            this.lblAge.TabIndex = 14;
+            this.lblAge.Text = "Age :";
+            // 
+            // lblRecoveryScore
+            // 
+            this.lblRecoveryScore.AutoSize = true;
+            this.lblRecoveryScore.Location = new System.Drawing.Point(6, 359);
+            this.lblRecoveryScore.Name = "lblRecoveryScore";
+            this.lblRecoveryScore.Size = new System.Drawing.Size(111, 16);
+            this.lblRecoveryScore.TabIndex = 15;
+            this.lblRecoveryScore.Text = "Recovery Score :";
+            // 
+            // lblAnimalDetails
+            // 
+            this.lblAnimalDetails.AutoSize = true;
+            this.lblAnimalDetails.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAnimalDetails.Location = new System.Drawing.Point(6, 179);
+            this.lblAnimalDetails.Name = "lblAnimalDetails";
+            this.lblAnimalDetails.Size = new System.Drawing.Size(252, 22);
+            this.lblAnimalDetails.TabIndex = 16;
+            this.lblAnimalDetails.Text = "Enter the details of  the animal";
+            // 
+            // btnSaveChanges
+            // 
+            this.btnSaveChanges.Enabled = false;
+            this.btnSaveChanges.Location = new System.Drawing.Point(163, 400);
+            this.btnSaveChanges.Name = "btnSaveChanges";
+            this.btnSaveChanges.Size = new System.Drawing.Size(142, 23);
+            this.btnSaveChanges.TabIndex = 17;
+            this.btnSaveChanges.Text = "Save Changes";
+            this.btnSaveChanges.UseVisualStyleBackColor = true;
+            this.btnSaveChanges.Click += new System.EventHandler(this.btnSaveChanges_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(163, 429);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(142, 23);
+            this.btnClear.TabIndex = 18;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // lblSearch
+            // 
+            this.lblSearch.AutoSize = true;
+            this.lblSearch.Location = new System.Drawing.Point(6, 93);
+            this.lblSearch.Name = "lblSearch";
+            this.lblSearch.Size = new System.Drawing.Size(71, 16);
+            this.lblSearch.TabIndex = 19;
+            this.lblSearch.Text = "Record ID:";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Location = new System.Drawing.Point(123, 93);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(170, 22);
+            this.txtSearch.TabIndex = 20;
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Location = new System.Drawing.Point(9, 128);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(108, 23);
+            this.btnSearch.TabIndex = 21;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // lblAnimalSearch
+            // 
+
+ main
             this.lblAnimalSearch.AutoSize = true;
             this.lblAnimalSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAnimalSearch.Location = new System.Drawing.Point(12, 58);
@@ -271,6 +432,10 @@
             this.lblAnimalSearch.Size = new System.Drawing.Size(210, 22);
             this.lblAnimalSearch.TabIndex = 22;
             this.lblAnimalSearch.Text = "Search for a record by ID";
+ feature/add-animal
+ Stashed changes
+
+ main
             // 
             // frmView
             // 
