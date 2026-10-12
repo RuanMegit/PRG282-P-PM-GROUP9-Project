@@ -192,7 +192,7 @@ namespace WildlifeRecordsSystem
                     {
                         // Remove the record from animals.txt
                         string filePath = Path.Combine(Application.StartupPath, "animals.txt");
-                        var lines = File.ReadAllLines(filePath, Encoding.UTF8).Where(line => !line.StartsWith(animalIdToDelete + "|")).ToArray();
+                        var lines = File.ReadAllLines(filePath, Encoding.UTF8).Where(line => !line.StartsWith(animalIdToDelete + "|", StringComparison.OrdinalIgnoreCase)).ToArray();
                         File.WriteAllLines(filePath, lines, Encoding.UTF8);
                     }
                     catch (IOException)
