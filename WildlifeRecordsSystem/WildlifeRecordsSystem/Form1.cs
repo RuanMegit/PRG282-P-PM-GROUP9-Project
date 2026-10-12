@@ -226,10 +226,104 @@ namespace WildlifeRecordsSystem
 
         }
 
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            string id = txtAnimalID.Text;
+            string name = txtAnimalName.Text;
+            string species = txtAnimalSpecies.Text;
+            string age = txtAnimalAge.Text;
+            string score = txtRecoveryScore.Text;
 
+            List<string> existingIds = GetExistingIds();
+
+            AnimalValidator validator = new AnimalValidator();
+
+            bool isValid = validator.TryValidateAnimal(
+                id, name, species, age, score,
+                existingIds,
+                out string normalizedId,
+                out string errorMessage
+            );
+
+            if (!isValid)
+            {
+                MessageBox.Show(errorMessage, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                if (errorMessage.Contains("ID")) txtAnimalID.Focus();
+                else if (errorMessage.Contains("Name")) txtAnimalName.Focus();
+                else if (errorMessage.Contains("Species")) txtAnimalSpecies.Focus();
+                else if (errorMessage.Contains("Age")) txtAnimalAge.Focus();
+                else if (errorMessage.Contains("Score")) txtRecoveryScore.Focus();
+
+                return;
+            }
+
+            txtAnimalID.Text = normalizedId;
+
+            try
+            {
+                string newRecord = $"{normalizedId}|{name.Trim()}|{species.Trim()}|{age.Trim()}|{score.Trim()}";
+
+                File.AppendAllText("animals.txt", newRecord + Environment.NewLine);
+
+                MessageBox.Show($"Animal {normalizedId} added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                RefreshDataGrid();
+                ClearTextBoxes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saving to file: " + ex.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+                    private void ClearTextBoxes()
+        {
+            txtAnimalID.Clear();
+            txtAnimalName.Clear();
+            txtAnimalSpecies.Clear();
+            txtAnimalAge.Clear();
+            txtRecoveryScore.Clear();
+            txtAnimalID.Focus();
+        }
+
+        private List<string> GetExistingIds()
+        {
+            List<string> ids = new List<string>();
+            if (File.Exists("animals.txt"))
+            {
+                string[] lines = File.ReadAllLines("animals.txt");
+                foreach (string line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    string[] parts = line.Split('|');
+                    if (parts.Length > 0) ids.Add(parts[0]);
+                }
+            }
+            return ids;
+        }
+
+        private void RefreshDataGrid()
+        {
+            dgvAnimals.Rows.Clear();
+            if (File.Exists("animals.txt"))
+            {
+                string[] lines = File.ReadAllLines("animals.txt");
+                foreach (string line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    string[] parts = line.Split('|');
+                    if (parts.Length >= 5)
+                    {
+                        dgvAnimals.Rows.Add(parts[0], parts[1], parts[2], parts[3], parts[4]);
+                    }
+                }
+            }
+        }
+        
+
+
+
 
         //Handles the Delete button: asks for confirmation, removes the selected animal from animals.txt, refreshes the grid and clears the form if that animal was loaded
         private void btnDelete_Click(object sender, EventArgs e)
@@ -442,6 +536,11 @@ namespace WildlifeRecordsSystem
             //Deselect the automatically selected first row so "no row selected" is possible
             dgvAnimals.ClearSelection();
             dgvAnimals.CurrentCell = null;
+        }
+
+        private void txtAnimalID_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
