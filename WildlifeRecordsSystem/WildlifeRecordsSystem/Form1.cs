@@ -188,11 +188,23 @@ namespace WildlifeRecordsSystem
                     "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
+                    try
+                    {
+                        // Remove the record from animals.txt
+                        string filePath = Path.Combine(Application.StartupPath, "animals.txt");
+                        var lines = File.ReadAllLines(filePath, Encoding.UTF8).Where(line => !line.StartsWith(animalIdToDelete + "|")).ToArray();
+                        File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                    }
+                    catch (IOException)
+                    { 
+                        MessageBox.Show("animals.txt could not be updated. It may be open in another program.", "File error");
+                    }
+                    catch (UnauthorizedAccessException)
+                    { 
+                        MessageBox.Show("Access denied to modify animals.txt.", "File error"); 
+                    }
                     
-                    // Remove the record from animals.txt
-                    string filePath = Path.Combine(Application.StartupPath, "animals.txt");
-                    var lines = File.ReadAllLines(filePath, Encoding.UTF8).Where(line => !line.StartsWith(animalIdToDelete + "|")).ToArray();
-                    File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                 
                     LoadAnimals(); // Refresh the DataGridView after deletion
                 }
             }
