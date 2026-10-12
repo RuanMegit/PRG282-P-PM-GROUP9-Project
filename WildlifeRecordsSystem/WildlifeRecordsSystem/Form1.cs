@@ -128,7 +128,11 @@ namespace WildlifeRecordsSystem
 
                     // if user input an lowercase id it is still acceptable, we just change the text to uppercase
                     dgvAnimals.Rows.Add(id.ToUpper(), name, species, age, score, status, housing);
+
+                   
                 }
+
+              
 
                 // Reporting skipped lines from the reading of the animals.txt file once after loading finishes.
                 if (skipCount > 0)
@@ -227,13 +231,13 @@ namespace WildlifeRecordsSystem
 
         }
 
-        //Requirement 4.1: The user can select a row and delete it. The program removes the record from the grid and from animals.txt. If no row is selected, show an error message.
+        //Handles the Delete button: asks for confirmation, removes the selected animal from animals.txt, refreshes the grid and clears the form if that animal was loaded
         private void btnDelete_Click(object sender, EventArgs e)
         {
            
             if (dgvAnimals.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select a row to delete.", "Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a row to delete.", "Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (dgvAnimals.SelectedRows.Count == 1)
@@ -242,8 +246,8 @@ namespace WildlifeRecordsSystem
                 string animalIdToDelete = selectedRow.Cells["AnimalID"].Value.ToString();
                 string animalNameToDelete = selectedRow.Cells["Name"].Value.ToString();
 
-
-                DialogResult result = MessageBox.Show("Delete " + animalIdToDelete + "(" + animalNameToDelete + ")? This cannot be undone.",
+                //Delete confirmation message box to prevent accidental deletion
+                DialogResult result = MessageBox.Show("Delete " + animalIdToDelete + " (" + animalNameToDelete + ")? This cannot be undone.",
                     "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
@@ -257,14 +261,21 @@ namespace WildlifeRecordsSystem
                     catch (IOException)
                     { 
                         MessageBox.Show("animals.txt could not be updated. It may be open in another program.", "File error");
+                        return;
                     }
                     catch (UnauthorizedAccessException)
                     { 
                         MessageBox.Show("Access denied to modify animals.txt.", "File error"); 
+                        return;
                     }
                     
                  
                     LoadAnimals(); // Refresh the DataGridView after deletion
+
+                    if(string.Equals(txtAnimalID.Text.Trim(), animalIdToDelete, StringComparison.OrdinalIgnoreCase))
+                    {
+                        ExitEditMode(); // Clear input boxes if the deleted record was being edited
+                    }
                 }
             }
         }
@@ -424,6 +435,13 @@ namespace WildlifeRecordsSystem
             MessageBox.Show($"The Record {searchID} was not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             txtSearch.Clear();
 
+        }
+
+        private void frmView_Shown(object sender, EventArgs e)
+        {
+            //Deselect the automatically selected first row so "no row selected" is possible
+            dgvAnimals.ClearSelection();
+            dgvAnimals.CurrentCell = null;
         }
     }
 }
