@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace WildlifeRecordsSystem
 {
@@ -166,6 +167,28 @@ namespace WildlifeRecordsSystem
 
         }
 
+
+        // Reads every ID currently in animals.txt (used for the uniqueness check)
+        private List<string> GetExistingIds()
+        {
+            var ids = new List<string>();
+            string path = Path.Combine(Application.StartupPath, "animals.txt");
+            if (!File.Exists(path)) return ids;
+
+            foreach (string line in File.ReadLines(path, Encoding.UTF8))
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                ids.Add(line.Split('|')[0].Trim());
+            }
+            return ids;
+        }
+
+        // Requirement 2.4: reload the grid from the file (LoadAnimals clears first, so no duplicates)
+        private void RefreshDataGrid()
+        {
+            LoadAnimals();
+        }
+
         private void btnDelete_Click(object sender, EventArgs e)
         {
 
@@ -182,6 +205,11 @@ namespace WildlifeRecordsSystem
         }
 
         private void frmView_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblID_Click(object sender, EventArgs e)
         {
 
         }
