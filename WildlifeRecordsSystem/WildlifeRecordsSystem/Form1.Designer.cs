@@ -131,7 +131,6 @@
             this.txtAnimalID.Name = "txtAnimalID";
             this.txtAnimalID.Size = new System.Drawing.Size(170, 22);
             this.txtAnimalID.TabIndex = 6;
-            this.txtAnimalID.TextChanged += new System.EventHandler(this.txtAnimalID_TextChanged);
             // 
             // txtAnimalName
             // 
@@ -303,7 +302,6 @@
             this.Controls.Add(this.btnAdd);
             this.Name = "frmView";
             this.Text = "View Animal";
-            this.Load += new System.EventHandler(this.frmView_Load);
             this.Shown += new System.EventHandler(this.frmView_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAnimals)).EndInit();
             this.ResumeLayout(false);
