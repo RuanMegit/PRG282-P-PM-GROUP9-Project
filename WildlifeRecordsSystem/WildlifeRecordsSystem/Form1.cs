@@ -188,7 +188,7 @@ namespace WildlifeRecordsSystem
         {
             txtAnimalID.ReadOnly = true;   //removes the option to change the ID
             btnAdd.Enabled = false;        //The add button is disabled to prevent duplicates being created
-            btnDelete.Enabled = false;     //The delete button is disabled to prevent line deletion
+            btnDelete.Enabled = true;     //The delete button is enable to select line deletion if wanted
             btnSaveChanges.Enabled = true;  //Enables the save changes button
         }
 
@@ -197,7 +197,7 @@ namespace WildlifeRecordsSystem
         {
             txtAnimalID.ReadOnly = false;   //disables read only on the input box after editing
             btnAdd.Enabled = true;          //The add button is enabled after editing
-            btnDelete.Enabled = false;      //The delete button is enabled after editing
+            btnDelete.Enabled = true;      //The delete button is enabled after editing
             btnSaveChanges.Enabled = false; //Save changes only enables when in editing mode
 
             ClearTextBoxes();
