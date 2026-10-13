@@ -341,9 +341,109 @@ namespace WildlifeRecordsSystem
             }
         }
 
+        //Method to calculate summary figures from the animals currently in the grid.
+        private SummaryResults CalculateSummary()
+        { 
+            SummaryResults result = new SummaryResults();
+            int totalAge = 0;
+            int totalScore = 0;
+
+
+            foreach (DataGridViewRow row in dgvAnimals.Rows)
+            { 
+                result.TotalAnimals++;
+                totalAge += Convert.ToInt32(row.Cells["Age"].Value);
+                totalScore += Convert.ToInt32(row.Cells["RecoveryScore"].Value);
+
+                string status = row.Cells["Status"].Value?.ToString();
+                switch (status)
+                {
+                    case "Critical":
+                        result.CriticalCount++;
+                        break;
+                    case "Serious":
+                        result.SeriousCount++;
+                        break;
+                    case "Stable":
+                        result.StableCount++;
+                        break;
+                    case "Recovering":
+                        result.RecoveringCount++;
+                        break;
+                    case "Release-Ready":
+                        result.ReleaseReadyCount++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (result.TotalAnimals > 0)
+            {
+                result.AverageAge = totalAge / (double)result.TotalAnimals;
+                result.AverageRecoveryScore = totalScore / (double)result.TotalAnimals;
+            }
+
+            return result;
+        }
+
         private void btnSummaryReport_Click(object sender, EventArgs e)
         {
+            SummaryResults summary = CalculateSummary();
 
+            //Create report in summary.txt file
+            string reportText = "BAOBAB RIDGE WILDLIFE RESCUE CENTRE" + Environment.NewLine + 
+                "ANIMAL SUMMARY REPORT" + Environment.NewLine + 
+                $"Generated: {DateTime.Now:yyyy-MM-dd HH:mm}";
+
+            reportText += Environment.NewLine +
+                       "------------------------------------" +
+            Environment.NewLine +
+                $"Total Animals: {summary.TotalAnimals}" + Environment.NewLine;
+
+            //Checks if there are any animals in the grid, if not it will display N/A for the average age and recovery score
+            if (summary.TotalAnimals == 0)
+            {
+                reportText += $"Average Age (years): N/A" + Environment.NewLine +
+                    $"Average Recovery Score: N/A" + Environment.NewLine +
+                    "------------------------------------" + Environment.NewLine;
+            }
+            else
+            {
+                reportText += $"Average Age (years): {summary.AverageAge:F2}" + Environment.NewLine +
+                    $"Average Recovery Score: {summary.AverageRecoveryScore:F2}" + Environment.NewLine +
+                    "------------------------------------" + Environment.NewLine;
+            }
+            
+            reportText += "Animals per Status:" + Environment.NewLine +
+                $"Critical: {summary.CriticalCount}" + Environment.NewLine +
+                $"Serious: {summary.SeriousCount}" + Environment.NewLine +
+                $"Stable: {summary.StableCount}" + Environment.NewLine +
+                $"Recovering: {summary.RecoveringCount}" + Environment.NewLine +
+                $"Release-Ready: {summary.ReleaseReadyCount}" + Environment.NewLine;
+
+            string summaryFilePath = Path.Combine(Application.StartupPath, "summary.txt");
+
+            try
+            {
+                File.WriteAllText(summaryFilePath, reportText);
+
+                //Displays the summary form with the calculated results
+                frmSummary summaryForm = new frmSummary(summary);
+                summaryForm.ShowDialog();
+            }
+            catch (IOException)
+            {
+
+                MessageBox.Show("summary.txt is currently being used by another program.", "File Error");
+                
+            }
+            catch(UnauthorizedAccessException)
+            {
+                MessageBox.Show("You do not have permission to write to summary.txt.", "File Error");
+            }
+
+           
         }
 
         //Clears the inputboxes
