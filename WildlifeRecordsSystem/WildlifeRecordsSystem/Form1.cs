@@ -424,9 +424,59 @@ namespace WildlifeRecordsSystem
         {
             SummaryResults summary = CalculateSummary();
 
-            //Displays the summary form with the calculated results
-            frmSummary summaryForm = new frmSummary(summary);
-            summaryForm.ShowDialog();
+            //Create report in summary.txt file
+            string reportText = "BAOBAB RIDGE WILDLIFE RESCUE CENTRE" + Environment.NewLine + 
+                "ANIMAL SUMMARY REPORT" + Environment.NewLine + 
+                $"Generated: {DateTime.Now:yyyy-MM-dd HH:mm}";
+
+            reportText += Environment.NewLine +
+                       "------------------------------------" +
+            Environment.NewLine +
+                $"Total Animals: {summary.TotalAnimals}" + Environment.NewLine;
+
+            //Checks if there are any animals in the grid, if not it will display N/A for the average age and recovery score
+            if (summary.TotalAnimals == 0)
+            {
+                reportText += $"Average Age (years): N/A" + Environment.NewLine +
+                    $"Average Recovery Score: N/A" + Environment.NewLine +
+                    "------------------------------------" + Environment.NewLine;
+            }
+            else
+            {
+                reportText += $"Average Age (years): {summary.AverageAge:F2}" + Environment.NewLine +
+                    $"Average Recovery Score: {summary.AverageRecoveryScore:F2}" + Environment.NewLine +
+                    "------------------------------------" + Environment.NewLine;
+            }
+            
+            reportText += "Animals per Status:" + Environment.NewLine +
+                $"Critical: {summary.CriticalCount}" + Environment.NewLine +
+                $"Serious: {summary.SeriousCount}" + Environment.NewLine +
+                $"Stable: {summary.StableCount}" + Environment.NewLine +
+                $"Recovering: {summary.RecoveringCount}" + Environment.NewLine +
+                $"Release-Ready: {summary.ReleaseReadyCount}" + Environment.NewLine;
+
+            string summaryFilePath = Path.Combine(Application.StartupPath, "summary.txt");
+
+            try
+            {
+                File.WriteAllText(summaryFilePath, reportText);
+
+                //Displays the summary form with the calculated results
+                frmSummary summaryForm = new frmSummary(summary);
+                summaryForm.ShowDialog();
+            }
+            catch (IOException)
+            {
+
+                MessageBox.Show("summary.txt is currently being used by another program.", "File Error");
+                
+            }
+            catch(UnauthorizedAccessException)
+            {
+                MessageBox.Show("You do not have permission to write to summary.txt.", "File Error");
+            }
+
+           
         }
 
         private void frmView_Load(object sender, EventArgs e)
