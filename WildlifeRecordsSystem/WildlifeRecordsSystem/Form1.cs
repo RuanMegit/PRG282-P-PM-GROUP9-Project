@@ -20,12 +20,9 @@ namespace WildlifeRecordsSystem
 
         public void SetupDataGridView()
         {
-
             // Requirement 2.3: The grid is read-only: users cannot edit cells, add rows or delete rows directly in it. Clicking a cell selects the whole row.Records appear in the same order as in the file.
             dgvAnimals.Columns.Clear();
-
             dgvAnimals.AutoGenerateColumns = false;
-
             dgvAnimals.ReadOnly = true;
             dgvAnimals.AllowUserToAddRows = false;
             dgvAnimals.AllowUserToDeleteRows = false;
@@ -40,7 +37,6 @@ namespace WildlifeRecordsSystem
             dgvAnimals.Columns.Add("RecoveryScore", "Recovery Score");
             dgvAnimals.Columns.Add("Status", "Status");
             dgvAnimals.Columns.Add("HousingUnit", "Housing Unit");
-
         }
 
         public void LoadAnimals()
@@ -49,11 +45,9 @@ namespace WildlifeRecordsSystem
             dgvAnimals.Rows.Clear();
 
             string filePath = Path.Combine(Application.StartupPath, "animals.txt");
-            int skipCount = 0;
+            int skipCount = 0; // a counter to notify user how many lines was skiped when reading the file
             var validator = new AnimalValidator(); //Caling AnimalValidator method to catch invalid lines
-
-            // Track IDs seen so far so duplicates within the file are also rejected.
-            var existingIds = new List<string>();
+            var existingIds = new List<string>(); // Track IDs seen so far so duplicates within the file are also rejected.
 
             try
             {
@@ -89,7 +83,7 @@ namespace WildlifeRecordsSystem
                     string status = parts[5].Trim();
                     string housing = parts[6].Trim();
 
-                    // Delegate all field validation (ID format, uniqueness, name/species, age range, score range) to the validator.
+                    // Delegate all field validation (ID, name, species, age, score) to the validator.
                     bool ok = validator.TryValidateAnimal(
                         id,
                         name,
@@ -144,7 +138,11 @@ namespace WildlifeRecordsSystem
             }
         }
 
-        //Method to calculate the housing unit and status from recovery score without the user nedding to enter it
+
+
+        //Methods for Add, Update, Delete functionality
+
+        //Method 1: to calculate the housing unit and status from recovery score without the user nedding to enter it (Add, Update)
         public void StatusCalculation(int score, out string status, out string housingunit)
         {
             if (score <= 19)
@@ -174,11 +172,7 @@ namespace WildlifeRecordsSystem
             }
         }
 
-
-
-        // All Methods for button functionality to call
-
-        //Method to clear user input text boxes to start over
+        //Method 2: to clear user input text boxes to start over (Add, Update, Delete)
         private void ClearTextBoxes()
         {
             txtAnimalID.Clear();
@@ -189,24 +183,27 @@ namespace WildlifeRecordsSystem
             txtAnimalID.Focus();
         }
 
-        //method enters edit mode and disables sensitive buttons and input boxes
+        //method 3: enters edit mode and disables sensitive buttons and input boxes (Update)
         public void EnterEditMode()
         {
             txtAnimalID.ReadOnly = true;   //removes the option to change the ID
-            btnAdd.Enabled = false;         //The add button is disabled to prevent duplicates being created
+            btnAdd.Enabled = false;        //The add button is disabled to prevent duplicates being created
+            btnDelete.Enabled = false;     //The delete button is disabled to prevent line deletion
             btnSaveChanges.Enabled = true;  //Enables the save changes button
         }
 
-        //Method exits edit mode and clears all input boxes
+        //Method 4: exits edit mode and clears all input boxes (Update)
         public void ExitEditMode()
         {
             txtAnimalID.ReadOnly = false;   //disables read only on the input box after editing
             btnAdd.Enabled = true;          //The add button is enabled after editing
+            btnDelete.Enabled = false;      //The delete button is enabled after editing
             btnSaveChanges.Enabled = false; //Save changes only enables when in editing mode
 
             ClearTextBoxes();
         }
-        //Method for loading information from the datagridview into inputboxes
+
+        //Method 5: for loading information from the datagridview into inputboxes
         private void LoadInfo(DataGridViewRow row)
         {
             //Tells is what is stored in the clicked cell and turns it into a string
@@ -218,29 +215,43 @@ namespace WildlifeRecordsSystem
             EnterEditMode();
         }
 
+        //Method 6: Store all ids to prevent duplecation errors
+        private List<string> GetExistingIds()
+        {
+            List<string> ids = new List<string>();
+            if (File.Exists("animals.txt"))
+            {
+                string[] lines = File.ReadAllLines("animals.txt");
+                foreach (string line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    string[] parts = line.Split('|');
+                    if (parts.Length > 0) ids.Add(parts[0]);
+                }
+            }
+            return ids;
+        }
 
 
-        // ADD ANIMAL RECORD LINE Functionality
 
+        // Feature: ADD ANIMAL RECORD LINE Functionality
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            //Storing user input from text boxes
             string id = txtAnimalID.Text;
             string name = txtAnimalName.Text;
             string species = txtAnimalSpecies.Text;
             string age = txtAnimalAge.Text;
             string score = txtRecoveryScore.Text;
 
-            List<string> existingIds = GetExistingIds();
+            //Validatation
+            List<string> existingIds = GetExistingIds(); //storing all id string to prevent duplication
 
             AnimalValidator validator = new AnimalValidator();
 
-            bool isValid = validator.TryValidateAnimal(
-                id, name, species, age, score,
-                existingIds,
-                out string normalizedId,
-                out string errorMessage
-            );
+            bool isValid = validator.TryValidateAnimal(id, name, species, age, score, existingIds, out string normalizedId, out string errorMessage);
 
+            //if user input was wrong the user will be notifyed with a message
             if (!isValid)
             {
                 MessageBox.Show(errorMessage, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -260,11 +271,10 @@ namespace WildlifeRecordsSystem
             {
                 // score comes in as a string from the textbox and hase been validated as correct.
                 int scoreValue = int.Parse(score);
-
                 // now we call method to calculate the status and housing unit.
                 StatusCalculation(scoreValue, out string status, out string housingunit);
-
-
+                   
+                //Storing new line to animals.txt file
                 string newRecord = $"{normalizedId}|{name.Trim()}|{species.Trim()}|{age.Trim()}|{score.Trim()}|{status}|{housingunit}";
 
                 string filePath = Path.Combine(Application.StartupPath, "animals.txt");
@@ -273,6 +283,7 @@ namespace WildlifeRecordsSystem
 
                 MessageBox.Show($"Animal {normalizedId} added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+                //Loading new new record to show accurate data and clearning textboxes for new opperation
                 LoadAnimals();
                 ClearTextBoxes();
             }
@@ -282,30 +293,11 @@ namespace WildlifeRecordsSystem
             }
         }
 
-        private List<string> GetExistingIds()
-        {
-            List<string> ids = new List<string>();
-            if (File.Exists("animals.txt"))
-            {
-                string[] lines = File.ReadAllLines("animals.txt");
-                foreach (string line in lines)
-                {
-                    if (string.IsNullOrWhiteSpace(line)) continue;
-                    string[] parts = line.Split('|');
-                    if (parts.Length > 0) ids.Add(parts[0]);
-                }
-            }
-            return ids;
-        }
-        
 
-
-
-
+        // Feature: DELETE ANIMAL RECORD LINE Functionality
         //Handles the Delete button: asks for confirmation, removes the selected animal from animals.txt, refreshes the grid and clears the form if that animal was loaded
         private void btnDelete_Click(object sender, EventArgs e)
         {
-           
             if (dgvAnimals.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Please select a row to delete.", "Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -318,8 +310,7 @@ namespace WildlifeRecordsSystem
                 string animalNameToDelete = selectedRow.Cells["Name"].Value.ToString();
 
                 //Delete confirmation message box to prevent accidental deletion
-                DialogResult result = MessageBox.Show("Delete " + animalIdToDelete + " (" + animalNameToDelete + ")? This cannot be undone.",
-                    "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("Delete " + animalIdToDelete + " (" + animalNameToDelete + ")? This cannot be undone.", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     try
@@ -364,8 +355,7 @@ namespace WildlifeRecordsSystem
 
 
 
-        // UPDATE ANIMAL RECORD LINE Functionality
-
+        // Feature: UPDATE ANIMAL RECORD LINE Functionality
         //Save the changes permanently towards the text file and the data grid view
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
@@ -381,17 +371,13 @@ namespace WildlifeRecordsSystem
             string age = txtAnimalAge.Text;
             string score = txtRecoveryScore.Text;
 
+            //Validate User input for name, species, age and score in validator class methods
             AnimalValidator validator = new AnimalValidator();
-
-            bool isValid = validator.TryValidateAnimalUpdate(
-                name, species, age, score, out string errorMessage
-            );
+            bool isValid = validator.TryValidateAnimalUpdate(name, species, age, score, out string errorMessage);
 
             if (!isValid)
             {
                 MessageBox.Show(errorMessage, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                if (errorMessage.Contains("ID")) txtAnimalID.Focus();
                 else if (errorMessage.Contains("Name")) txtAnimalName.Focus();
                 else if (errorMessage.Contains("Species")) txtAnimalSpecies.Focus();
                 else if (errorMessage.Contains("Age")) txtAnimalAge.Focus();
@@ -400,8 +386,8 @@ namespace WildlifeRecordsSystem
                 return;
             }
 
+            //Calculation the status and housing unit automaticaly
             int scoreint = Int32.Parse(score);
-
             StatusCalculation(scoreint, out string status, out string housingunit);
 
             //captures id again
