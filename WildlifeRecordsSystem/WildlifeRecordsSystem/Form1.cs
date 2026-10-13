@@ -378,7 +378,7 @@ namespace WildlifeRecordsSystem
             if (!isValid)
             {
                 MessageBox.Show(errorMessage, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                else if (errorMessage.Contains("Name")) txtAnimalName.Focus();
+                if (errorMessage.Contains("Name")) txtAnimalName.Focus();
                 else if (errorMessage.Contains("Species")) txtAnimalSpecies.Focus();
                 else if (errorMessage.Contains("Age")) txtAnimalAge.Focus();
                 else if (errorMessage.Contains("Score")) txtRecoveryScore.Focus();
