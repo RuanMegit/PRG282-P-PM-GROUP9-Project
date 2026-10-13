@@ -373,6 +373,18 @@ namespace WildlifeRecordsSystem
                 }
             }
         }
+        //Method to calculate summary figures from the animals currently in the grid.
+        private SummaryResults CalculateSummary()
+        { 
+            SummaryResults result = new SummaryResults();
+
+            foreach (DataGridView row in dgvAnimals.Rows)
+            { 
+                result.TotalAnimals++;
+            }
+
+            return result;
+        }
 
         private void btnSummaryReport_Click(object sender, EventArgs e)
         {
