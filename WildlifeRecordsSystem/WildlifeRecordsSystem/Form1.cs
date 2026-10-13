@@ -377,10 +377,21 @@ namespace WildlifeRecordsSystem
         private SummaryResults CalculateSummary()
         { 
             SummaryResults result = new SummaryResults();
+            int totalAge = 0;
+            int totalScore = 0;
 
-            foreach (DataGridView row in dgvAnimals.Rows)
+
+            foreach (DataGridViewRow row in dgvAnimals.Rows)
             { 
                 result.TotalAnimals++;
+                totalAge += Convert.ToInt32(row.Cells["Age"].Value);
+                totalScore += Convert.ToInt32(row.Cells["RecoveryScore"].Value);
+            }
+
+            if (result.TotalAnimals > 0)
+            {
+                result.AverageAge = totalAge / (double)result.TotalAnimals;
+                result.AverageScore = totalScore / (double)result.TotalAnimals;
             }
 
             return result;
