@@ -373,6 +373,7 @@ namespace WildlifeRecordsSystem
                 }
             }
         }
+
         //Method to calculate summary figures from the animals currently in the grid.
         private SummaryResults CalculateSummary()
         { 
@@ -386,6 +387,28 @@ namespace WildlifeRecordsSystem
                 result.TotalAnimals++;
                 totalAge += Convert.ToInt32(row.Cells["Age"].Value);
                 totalScore += Convert.ToInt32(row.Cells["RecoveryScore"].Value);
+
+                string status = row.Cells["Status"].Value?.ToString();
+                switch (status)
+                {
+                    case "Critical":
+                        result.CriticalCount++;
+                        break;
+                    case "Serious":
+                        result.SeriousCount++;
+                        break;
+                    case "Stable":
+                        result.StableCount++;
+                        break;
+                    case "Recovering":
+                        result.RecoveringCount++;
+                        break;
+                    case "Release-Ready":
+                        result.ReleaseReadyCount++;
+                        break;
+                    default:
+                        break;
+                }
             }
 
             if (result.TotalAnimals > 0)
@@ -399,7 +422,7 @@ namespace WildlifeRecordsSystem
 
         private void btnSummaryReport_Click(object sender, EventArgs e)
         {
-
+         
         }
 
         private void frmView_Load(object sender, EventArgs e)
