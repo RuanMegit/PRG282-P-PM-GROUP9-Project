@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace WildlifeRecordsSystem
 {
-    class SummaryResults
+   public class SummaryResults
     {
         public int TotalAnimals { get; set; }
         public double AverageAge { get; set; }
-        public double AverageScore { get; set; } 
+        public double AverageRecoveryScore { get; set; } 
         public int CriticalCount { get; set; }
         public int SeriousCount { get; set; }
         public int StableCount { get; set; }

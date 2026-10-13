@@ -12,14 +12,26 @@ namespace WildlifeRecordsSystem
 {
     public partial class frmSummary : Form
     {
-        public frmSummary()
+        public frmSummary(SummaryResults summary)
         {
             InitializeComponent();
-        }
+
+            lblTotalAnimals.Text = summary.TotalAnimals.ToString();
+            lblAverageAge.Text = summary.AverageAge.ToString("F2");
+            lblAverageRecoveryScore.Text = summary.AverageRecoveryScore.ToString("F2");
+
+            lblCritical.Text = summary.CriticalCount.ToString();
+            lblSerious.Text = summary.SeriousCount.ToString();
+            lblStable.Text = summary.StableCount.ToString();
+            lblRecovering.Text = summary.RecoveringCount.ToString();
+            lblReleaseReady.Text = summary.ReleaseReadyCount.ToString();
+            }
 
         private void frmSummary_Load(object sender, EventArgs e)
         {
 
         }
     }
+
+   
 }

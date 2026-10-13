@@ -32,7 +32,7 @@
             this.lbl1TotalAnimals = new System.Windows.Forms.Label();
             this.lblAverageAge = new System.Windows.Forms.Label();
             this.lbl2AverageAge = new System.Windows.Forms.Label();
-            this.lblAverageReccoveryScore = new System.Windows.Forms.Label();
+            this.lblAverageRecoveryScore = new System.Windows.Forms.Label();
             this.lbl3AvgRecoveryScore = new System.Windows.Forms.Label();
             this.lbl4Critcal = new System.Windows.Forms.Label();
             this.lblCritical = new System.Windows.Forms.Label();
@@ -60,6 +60,7 @@
             // lbl1TotalAnimals
             // 
             this.lbl1TotalAnimals.AutoSize = true;
+            this.lbl1TotalAnimals.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl1TotalAnimals.Location = new System.Drawing.Point(260, 82);
             this.lbl1TotalAnimals.Name = "lbl1TotalAnimals";
             this.lbl1TotalAnimals.Size = new System.Drawing.Size(92, 16);
@@ -78,20 +79,21 @@
             // lbl2AverageAge
             // 
             this.lbl2AverageAge.AutoSize = true;
+            this.lbl2AverageAge.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl2AverageAge.Location = new System.Drawing.Point(260, 116);
             this.lbl2AverageAge.Name = "lbl2AverageAge";
             this.lbl2AverageAge.Size = new System.Drawing.Size(135, 16);
             this.lbl2AverageAge.TabIndex = 3;
             this.lbl2AverageAge.Text = "Average Age (years):";
             // 
-            // lblAverageReccoveryScore
+            // lblAverageRecoveryScore
             // 
-            this.lblAverageReccoveryScore.AutoSize = true;
-            this.lblAverageReccoveryScore.Location = new System.Drawing.Point(443, 155);
-            this.lblAverageReccoveryScore.Name = "lblAverageReccoveryScore";
-            this.lblAverageReccoveryScore.Size = new System.Drawing.Size(30, 16);
-            this.lblAverageReccoveryScore.TabIndex = 4;
-            this.lblAverageReccoveryScore.Text = "N/A";
+            this.lblAverageRecoveryScore.AutoSize = true;
+            this.lblAverageRecoveryScore.Location = new System.Drawing.Point(443, 155);
+            this.lblAverageRecoveryScore.Name = "lblAverageRecoveryScore";
+            this.lblAverageRecoveryScore.Size = new System.Drawing.Size(30, 16);
+            this.lblAverageRecoveryScore.TabIndex = 4;
+            this.lblAverageRecoveryScore.Text = "N/A";
             // 
             // lbl3AvgRecoveryScore
             // 
@@ -232,7 +234,7 @@
             this.Controls.Add(this.lblCritical);
             this.Controls.Add(this.lbl4Critcal);
             this.Controls.Add(this.lbl3AvgRecoveryScore);
-            this.Controls.Add(this.lblAverageReccoveryScore);
+            this.Controls.Add(this.lblAverageRecoveryScore);
             this.Controls.Add(this.lbl2AverageAge);
             this.Controls.Add(this.lblAverageAge);
             this.Controls.Add(this.lbl1TotalAnimals);
@@ -251,7 +253,7 @@
         private System.Windows.Forms.Label lbl1TotalAnimals;
         private System.Windows.Forms.Label lblAverageAge;
         private System.Windows.Forms.Label lbl2AverageAge;
-        private System.Windows.Forms.Label lblAverageReccoveryScore;
+        private System.Windows.Forms.Label lblAverageRecoveryScore;
         private System.Windows.Forms.Label lbl3AvgRecoveryScore;
         private System.Windows.Forms.Label lbl4Critcal;
         private System.Windows.Forms.Label lblCritical;

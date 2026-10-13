@@ -414,7 +414,7 @@ namespace WildlifeRecordsSystem
             if (result.TotalAnimals > 0)
             {
                 result.AverageAge = totalAge / (double)result.TotalAnimals;
-                result.AverageScore = totalScore / (double)result.TotalAnimals;
+                result.AverageRecoveryScore = totalScore / (double)result.TotalAnimals;
             }
 
             return result;
@@ -422,7 +422,11 @@ namespace WildlifeRecordsSystem
 
         private void btnSummaryReport_Click(object sender, EventArgs e)
         {
-         
+            SummaryResults summary = CalculateSummary();
+
+            //Displays the summary form with the calculated results
+            frmSummary summaryForm = new frmSummary(summary);
+            summaryForm.ShowDialog();
         }
 
         private void frmView_Load(object sender, EventArgs e)
