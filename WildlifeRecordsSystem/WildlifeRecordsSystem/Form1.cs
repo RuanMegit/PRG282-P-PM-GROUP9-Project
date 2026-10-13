@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WildlifeRecordsSystem
@@ -45,13 +41,6 @@ namespace WildlifeRecordsSystem
             dgvAnimals.Columns.Add("Status", "Status");
             dgvAnimals.Columns.Add("HousingUnit", "Housing Unit");
 
-           
-            /* Requirment 2.4: The grid refreshes automatically after every add, update and delete, without restarting the program and without duplicate rows. 
-            we must add this code at the end to the Add and update and deltet feature when that feature is implemented
-            datagridview1.update();
-            datagridview1.refresh();
-            */
-
         }
 
         public void LoadAnimals()
@@ -61,6 +50,10 @@ namespace WildlifeRecordsSystem
 
             string filePath = Path.Combine(Application.StartupPath, "animals.txt");
             int skipCount = 0;
+            var validator = new AnimalValidator(); //Caling AnimalValidator method to catch invalid lines
+
+            // Track IDs seen so far so duplicates within the file are also rejected.
+            var existingIds = new List<string>();
 
             try
             {
@@ -71,9 +64,10 @@ namespace WildlifeRecordsSystem
                     return;
                 }
 
-                // Requirement 2.1: When the application starts, it loads animals.txt and shows every valid record in a DataGridView.
+                // Requirement 2.1: Load animals.txt and show every valid record.
                 foreach (string line in File.ReadLines(filePath, Encoding.UTF8))
                 {
+                    // Skip blanks and wrong column counts before handing off to the validator.
                     if (string.IsNullOrWhiteSpace(line))
                     {
                         skipCount++;
@@ -95,52 +89,40 @@ namespace WildlifeRecordsSystem
                     string status = parts[5].Trim();
                     string housing = parts[6].Trim();
 
-                    // ID must be WR- followed by exactly 4 digits (case-insensitive).
-                    if (!Regex.IsMatch(id, @"^WR-\d{4}$", RegexOptions.IgnoreCase))
+                    // Delegate all field validation (ID format, uniqueness, name/species, age range, score range) to the validator.
+                    bool ok = validator.TryValidateAnimal(
+                        id,
+                        name,
+                        species,
+                        ageTxt,
+                        scoreTxt,
+                        existingIds,
+                        out string normalizedId,
+                        out _);
+
+                    if (!ok)
                     {
                         skipCount++;
                         continue;
                     }
 
-                    // Age and recovery score must be whole numbers from 0 to 100.
-                    if (!int.TryParse(ageTxt, out int age) || age < 0 || age > 100)
-                    {
-                        skipCount++;
-                        continue;
-                    }
-                    if (!int.TryParse(scoreTxt, out int score) || score < 0 || score > 100)
-                    {
-                        skipCount++;
-                        continue;
-                    }
+                    // Remember the accepted ID so later duplicates are rejected too.
+                    existingIds.Add(normalizedId);
 
-                    // name and species. 1–30 characters. Must not contain the pipe character |.
-                    if (string.IsNullOrWhiteSpace(name) || name.Length > 30)
-                    {
-                        skipCount++;
-                        continue;
-                    }
-                    if (string.IsNullOrWhiteSpace(species) || species.Length > 30)
-                    {
-                        skipCount++;
-                        continue;
-                    }
-
-                    // if user input an lowercase id it is still acceptable, we just change the text to uppercase
-                    dgvAnimals.Rows.Add(id.ToUpper(), name, species, age, score, status, housing);
-
-                   
+                    dgvAnimals.Rows.Add(
+                        normalizedId,
+                        name,
+                        species,
+                        int.Parse(ageTxt),
+                        int.Parse(scoreTxt),
+                        status,
+                        housing);
                 }
 
-              
-
-                // Reporting skipped lines from the reading of the animals.txt file once after loading finishes.
+                // Reporting skipped lines once after loading finishes.
                 if (skipCount > 0)
                 {
-                    MessageBox.Show(
-                        $"{skipCount} malformed line(s) were skipped while loading animals.txt.", "Load complete",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
+                    MessageBox.Show($"{skipCount} malformed line(s) were skipped while loading animals.txt.", "Continue to view records", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
 
@@ -162,6 +144,51 @@ namespace WildlifeRecordsSystem
             }
         }
 
+        //Method to calculate the housing unit and status from recovery score without the user nedding to enter it
+        public void StatusCalculation(int score, out string status, out string housingunit)
+        {
+            if (score <= 19)
+            {
+                status = "Critical";
+                housingunit = "Intensive Care Unit";
+            }
+            else if (score <= 39)
+            {
+                status = "Serious";
+                housingunit = "High-Dependency Ward";
+            }
+            else if (score <= 59)
+            {
+                status = "Stable";
+                housingunit = "Recovery Ward";
+            }
+            else if (score <= 79)
+            {
+                status = "Recovering";
+                housingunit = "Outdoor Enclosure";
+            }
+            else
+            {
+                status = "Release-Ready";
+                housingunit = "Pre-Release Camp";
+            }
+        }
+
+
+
+        // All Methods for button functionality to call
+
+        //Method to clear user input text boxes to start over
+        private void ClearTextBoxes()
+        {
+            txtAnimalID.Clear();
+            txtAnimalName.Clear();
+            txtAnimalSpecies.Clear();
+            txtAnimalAge.Clear();
+            txtRecoveryScore.Clear();
+            txtAnimalID.Focus();
+        }
+
         //method enters edit mode and disables sensitive buttons and input boxes
         public void EnterEditMode()
         {
@@ -177,12 +204,7 @@ namespace WildlifeRecordsSystem
             btnAdd.Enabled = true;          //The add button is enabled after editing
             btnSaveChanges.Enabled = false; //Save changes only enables when in editing mode
 
-            //Clears the editboxes when exiting editmode
-            txtAnimalID.Clear();
-            txtAnimalAge.Clear();
-            txtAnimalName.Clear();
-            txtAnimalSpecies.Clear();
-            txtRecoveryScore.Clear();
+            ClearTextBoxes();
         }
         //Method for loading information from the datagridview into inputboxes
         private void LoadInfo(DataGridViewRow row)
@@ -196,36 +218,9 @@ namespace WildlifeRecordsSystem
             EnterEditMode();
         }
 
-        private void StatusCalculation(int score, out string status, out string housingunit)
-        {
-            if (score <= 19)
-            {
-                status = ("Critical");
-                housingunit = ("Intensive Care Unit");
-            }
-            else if (score <= 39)
-            {
-                status = ("Serious");
-                housingunit = ("High-Dependency Ward");
-            }
-            else if (score <= 59)
-            {
-                status = ("Stable");
-                housingunit = ("Recovery Ward");
-            }
-            else if (score <= 79)
-            {
-                status = ("Recovering");
-                housingunit = ("Outdoor Enclosure");
-            }
-            else
-            {
-                status = ("Release-Ready");
-                housingunit = ("Pre-Release Camp");
-            }
 
-        }
 
+        // ADD ANIMAL RECORD LINE Functionality
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -263,28 +258,28 @@ namespace WildlifeRecordsSystem
 
             try
             {
-                string newRecord = $"{normalizedId}|{name.Trim()}|{species.Trim()}|{age.Trim()}|{score.Trim()}";
+                // score comes in as a string from the textbox and hase been validated as correct.
+                int scoreValue = int.Parse(score);
 
-                File.AppendAllText("animals.txt", newRecord + Environment.NewLine);
+                // now we call method to calculate the status and housing unit.
+                StatusCalculation(scoreValue, out string status, out string housingunit);
+
+
+                string newRecord = $"{normalizedId}|{name.Trim()}|{species.Trim()}|{age.Trim()}|{score.Trim()}|{status}|{housingunit}";
+
+                string filePath = Path.Combine(Application.StartupPath, "animals.txt");
+
+                File.AppendAllText(filePath,newRecord + Environment.NewLine,Encoding.UTF8); ;
 
                 MessageBox.Show($"Animal {normalizedId} added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                RefreshDataGrid();
+                LoadAnimals();
                 ClearTextBoxes();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error saving to file: " + ex.Message, "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-                    private void ClearTextBoxes()
-        {
-            txtAnimalID.Clear();
-            txtAnimalName.Clear();
-            txtAnimalSpecies.Clear();
-            txtAnimalAge.Clear();
-            txtRecoveryScore.Clear();
-            txtAnimalID.Focus();
         }
 
         private List<string> GetExistingIds()
@@ -302,24 +297,6 @@ namespace WildlifeRecordsSystem
             }
             return ids;
         }
-
-        private void RefreshDataGrid()
-        {
-            dgvAnimals.Rows.Clear();
-            if (File.Exists("animals.txt"))
-            {
-                string[] lines = File.ReadAllLines("animals.txt");
-                foreach (string line in lines)
-                {
-                    if (string.IsNullOrWhiteSpace(line)) continue;
-                    string[] parts = line.Split('|');
-                    if (parts.Length >= 5)
-                    {
-                        dgvAnimals.Rows.Add(parts[0], parts[1], parts[2], parts[3], parts[4]);
-                    }
-                }
-            }
-        }
         
 
 
@@ -334,7 +311,7 @@ namespace WildlifeRecordsSystem
                 MessageBox.Show("Please select a row to delete.", "Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (dgvAnimals.SelectedRows.Count == 1)
+            else
             {
                 DataGridViewRow selectedRow = dgvAnimals.SelectedRows[0];
                 string animalIdToDelete = selectedRow.Cells["AnimalID"].Value.ToString();
@@ -353,20 +330,19 @@ namespace WildlifeRecordsSystem
                         File.WriteAllLines(filePath, lines, Encoding.UTF8);
                     }
                     catch (IOException)
-                    { 
+                    {
                         MessageBox.Show("animals.txt could not be updated. It may be open in another program.", "File error");
                         return;
                     }
                     catch (UnauthorizedAccessException)
-                    { 
-                        MessageBox.Show("Access denied to modify animals.txt.", "File error"); 
+                    {
+                        MessageBox.Show("Access denied to modify animals.txt.", "File error");
                         return;
                     }
-                    
-                 
+
                     LoadAnimals(); // Refresh the DataGridView after deletion
 
-                    if(string.Equals(txtAnimalID.Text.Trim(), animalIdToDelete, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(txtAnimalID.Text.Trim(), animalIdToDelete, StringComparison.OrdinalIgnoreCase))
                     {
                         ExitEditMode(); // Clear input boxes if the deleted record was being edited
                     }
@@ -379,17 +355,16 @@ namespace WildlifeRecordsSystem
 
         }
 
-        private void frmView_Load(object sender, EventArgs e)
-        {
-
-        }
-
         //Clears the inputboxes
         private void btnClear_Click(object sender, EventArgs e)
         {
             ExitEditMode();  
             
         }
+
+
+
+        // UPDATE ANIMAL RECORD LINE Functionality
 
         //Save the changes permanently towards the text file and the data grid view
         private void btnSaveChanges_Click(object sender, EventArgs e)
@@ -400,48 +375,38 @@ namespace WildlifeRecordsSystem
                 return;
             }
 
+            string id = txtAnimalID.Text;
+            string name = txtAnimalName.Text;
+            string species = txtAnimalSpecies.Text;
+            string age = txtAnimalAge.Text;
+            string score = txtRecoveryScore.Text;
 
-            //captures name and species variables
-            string name = txtAnimalName.Text.Trim();
-            string species = txtAnimalSpecies.Text.Trim();
+            AnimalValidator validator = new AnimalValidator();
 
-            //If statement for validating input box inputs
-            if (name.Length < 1 || name.Length > 30 || name.Contains("|"))
+            bool isValid = validator.TryValidateAnimalUpdate(
+                name, species, age, score, out string errorMessage
+            );
+
+            if (!isValid)
             {
-                MessageBox.Show("Name must be between 1 and 30 characters and not contain '|'.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtAnimalName.Focus();
+                MessageBox.Show(errorMessage, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                if (errorMessage.Contains("ID")) txtAnimalID.Focus();
+                else if (errorMessage.Contains("Name")) txtAnimalName.Focus();
+                else if (errorMessage.Contains("Species")) txtAnimalSpecies.Focus();
+                else if (errorMessage.Contains("Age")) txtAnimalAge.Focus();
+                else if (errorMessage.Contains("Score")) txtRecoveryScore.Focus();
+
                 return;
             }
 
-            //If statement for validating input box inputs
-            if (species.Length < 1 || species.Length > 30 || species.Contains("|"))
-            {
-                MessageBox.Show("Species must be between 1 and 30 characters and not contain '|'.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtAnimalSpecies.Focus();
-                return;
-            }
+            int scoreint = Int32.Parse(score);
 
-            //If statement for validating input box inputs
-            if (!int.TryParse(txtAnimalAge.Text.Trim(), out int age) || age < 0 || age > 100)
-            {
-                MessageBox.Show("Age must be a whole number between 0 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtAnimalAge.Focus();
-                return;
-            }
-
-            //If statement for validating input box inputs
-            if (!int.TryParse(txtRecoveryScore.Text.Trim(), out int recoveryscore) || recoveryscore < 0 || recoveryscore > 100)
-            {
-                MessageBox.Show("Recovery Score must be a whole number between 0 and 100", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtRecoveryScore.Focus();
-                return;
-            }
-
-            StatusCalculation(recoveryscore, out string status, out string housingunit);
+            StatusCalculation(scoreint, out string status, out string housingunit);
 
             //captures id again
-            string id = txtAnimalID.Text.Trim().ToUpper();
-            string newAnimalline = $"{id}|{name}|{species}|{age}|{recoveryscore}|{status}|{housingunit}";
+            id = txtAnimalID.Text.Trim().ToUpper();
+            string newAnimalline = $"{id}|{name}|{species}|{age}|{score}|{status}|{housingunit}";
 
             string path = Path.Combine(Application.StartupPath, "animals.txt"); //file path towards text file
 
@@ -505,8 +470,6 @@ namespace WildlifeRecordsSystem
         {
             string searchID = txtSearch.Text.Trim();
 
-            
-
             if (string.IsNullOrWhiteSpace(searchID))
             {
                 MessageBox.Show("Enter an animal ID", "Search box", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -517,7 +480,6 @@ namespace WildlifeRecordsSystem
             foreach (DataGridViewRow row in dgvAnimals.Rows)
             {
                 string rowID = row.Cells[0].Value?.ToString();  //RowID is declared to compare
-                
 
                 if (string.Equals(rowID, searchID, StringComparison.OrdinalIgnoreCase)) //Ignores case sensitive inputs
                 {
@@ -536,11 +498,6 @@ namespace WildlifeRecordsSystem
             //Deselect the automatically selected first row so "no row selected" is possible
             dgvAnimals.ClearSelection();
             dgvAnimals.CurrentCell = null;
-        }
-
-        private void txtAnimalID_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
