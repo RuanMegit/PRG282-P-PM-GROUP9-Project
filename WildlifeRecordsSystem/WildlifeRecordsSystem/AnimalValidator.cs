@@ -8,27 +8,6 @@ namespace WildlifeRecordsSystem
 {
     internal class AnimalValidator
     {
-        // Keeps the original method signature for existing callers.
-        public bool ValidateAnimal(
-            string animalId,
-            string name,
-            string species,
-            string ageText,
-            string recoveryScoreText,
-            IEnumerable<string> existingIds,
-            out string errorMessage)
-        {
-            return TryValidateAnimal(
-                animalId,
-                name,
-                species,
-                ageText,
-                recoveryScoreText,
-                existingIds,
-                out _,
-                out errorMessage);
-        }
-
         // Extended method for Add, Update and View.
         // Returns the normalized ID and supports excluding the current animal when checking uniqueness during Update.
         public bool TryValidateAnimal(
@@ -39,8 +18,7 @@ namespace WildlifeRecordsSystem
             string recoveryScoreText,
             IEnumerable<string> existingIds,
             out string normalizedAnimalId,
-            out string errorMessage,
-            string currentAnimalId = null)
+            out string errorMessage)
         {
             normalizedAnimalId = string.Empty;
             errorMessage = string.Empty;
@@ -61,8 +39,7 @@ namespace WildlifeRecordsSystem
             if (existingIds != null && existingIds.Any(existingId =>
             {
                 string existing = (existingId ?? string.Empty).Trim();
-                bool isCurrentRecord = currentAnimalId != null && string.Equals(existing, currentAnimalId.Trim(), StringComparison.OrdinalIgnoreCase);
-                return !isCurrentRecord && string.Equals(existing, id, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(existing, id, StringComparison.OrdinalIgnoreCase);
             }))
             {
                 errorMessage = "Animal ID already exists.";

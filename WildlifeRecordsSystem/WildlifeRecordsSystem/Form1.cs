@@ -279,7 +279,7 @@ namespace WildlifeRecordsSystem
 
                 string filePath = Path.Combine(Application.StartupPath, "animals.txt");
 
-                File.AppendAllText(filePath,newRecord + Environment.NewLine,Encoding.UTF8); ;
+                File.AppendAllText(filePath,newRecord + Environment.NewLine,Encoding.UTF8);
 
                 MessageBox.Show($"Animal {normalizedId} added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -387,19 +387,17 @@ namespace WildlifeRecordsSystem
             return result;
         }
 
+        // Feature: Summary Report Functionality
         private void btnSummaryReport_Click(object sender, EventArgs e)
         {
             SummaryResults summary = CalculateSummary();
 
             //Create report in summary.txt file
-            string reportText = "BAOBAB RIDGE WILDLIFE RESCUE CENTRE" + Environment.NewLine + 
-                "ANIMAL SUMMARY REPORT" + Environment.NewLine + 
-                $"Generated: {DateTime.Now:yyyy-MM-dd HH:mm}";
-
-            reportText += Environment.NewLine +
-                       "------------------------------------" +
-            Environment.NewLine +
-                $"Total Animals: {summary.TotalAnimals}" + Environment.NewLine;
+            string reportText = "BAOBAB RIDGE WILDLIFE RESCUE CENTRE" +
+                Environment.NewLine + "ANIMAL SUMMARY REPORT" +
+                Environment.NewLine + $"Generated: {DateTime.Now:yyyy-MM-dd HH:mm}" +
+                Environment.NewLine + "------------------------------------" +
+                Environment.NewLine + $"Total Animals: {summary.TotalAnimals}" + Environment.NewLine;
 
             //Checks if there are any animals in the grid, if not it will display N/A for the average age and recovery score
             if (summary.TotalAnimals == 0)
@@ -442,15 +440,12 @@ namespace WildlifeRecordsSystem
             {
                 MessageBox.Show("You do not have permission to write to summary.txt.", "File Error");
             }
-
-           
         }
 
         //Clears the inputboxes
         private void btnClear_Click(object sender, EventArgs e)
         {
-            ExitEditMode();  
-            
+            ExitEditMode(); 
         }
 
 
@@ -576,7 +571,6 @@ namespace WildlifeRecordsSystem
             //Shows an error if the record wasnt found
             MessageBox.Show($"The Record {searchID} was not found", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             txtSearch.Clear();
-
         }
 
         private void frmView_Shown(object sender, EventArgs e)
