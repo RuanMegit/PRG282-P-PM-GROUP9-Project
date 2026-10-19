@@ -69,3 +69,47 @@ Limitations
 •	The summary is calculated from records successfully loaded into the DataGridView, so malformed records that were skipped during loading are not included in the report.
 •	The delete feature identifies records using Animal IDs therefore it relies on Animal IDs being unique. 
 
+Zukhanye Mayekiso (603121) (Feature 2: Add Animal Record & Validation)
+What I built
+
+I was responsible for the Add feature, which lets a user capture a new animal record and add it to the system. The main focus here was making sure that only clean, valid data ever makes it into animals.txt. When the user clicks Add, the program runs through a full set of validation checks first — checking that the ID follows the correct format, that no required fields are left blank, that numeric values (like age and recovery score) are actually numbers and fall within sensible ranges, and that the new Animal ID doesn't already exist in the file. If anything fails, the user gets a clear message explaining what needs fixing, and nothing is written. If everything passes, the record is appended to animals.txt, the DataGridView refreshes, and the input fields are cleared, ready for the next entry.
+
+I also worked on the shared AnimalValidator class (later moved into the business logic layer), which the rest of the system uses to check whether existing records in the file are valid or malformed. This keeps validation consistent across the Add, Update and file-loading features, rather than each person writing their own rules.
+
+How to use it
+
+Fill in all the input fields on the form.
+
+Click the Add button.
+
+If any field is invalid, a message box will tell you exactly what's wrong — fix it and click Add again.
+
+If the record is valid, you'll get a confirmation and the new animal will appear in the DataGridView.
+
+Animal IDs should follow the WR- format, followed by the record number (e.g. WR-009).
+
+Error handling
+
+The Add button validates every field before attempting to save, so invalid or duplicate records are rejected with a specific message rather than silently failing.
+
+Numeric fields are checked to make sure they're real numbers and within acceptable ranges (e.g. age can't be negative).
+
+Duplicate Animal IDs are caught before writing, so two animals can never share the same ID.
+
+The save operation uses a Try-Catch block to handle FileNotFoundException, DirectoryNotFoundException, IOException and UnauthorizedAccessException, so the app shows a friendly message instead of crashing if the file is missing, locked, or the user lacks permission.
+
+Important methods
+
+btnAdd_Click() — Runs all validation checks, then appends the new record to animals.txt and refreshes the grid.
+
+ValidateAnimal() — The core validation routine that checks ID format, required fields, numeric ranges and duplicates.
+
+AnimalValidator class — Shared validation logic used by both the Add feature and the file-loading process, so a record is judged by the same rules no matter where it enters the system.
+
+Limitations
+
+Validation rules are strict by design, so if the team later changes the expected ID format, the validator will need updating too.
+
+The duplicate check is based on Animal ID only, so it relies on IDs being unique across the file.
+
+Validation happens at the point of entry; if a malformed record is added to animals.txt manually (outside the app), it will only be flagged when the file is loaded, not corrected.
