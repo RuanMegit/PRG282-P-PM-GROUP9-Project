@@ -28,3 +28,44 @@ Start the windows form application and the animals will be populated to view wit
 
 Important Methods:
 I used the validator class to validate that all lines in the animals.txt file is valid or invalid to display in datagridview.
+
+Omphile Nthoesane (604593)
+Feature 4 (Delete), Feature 5 (Summary Report)
+
+What I built
+1.	Delete: I implemented the Delete Animal Record feature, which allows users to select and permanently remove an animal record from the system. Before deletion, the user is prompted with a confirmation message to prevent accidental removal. The record is then removed from animals.txt, the DataGridView is refreshed, and the form is cleared if the deleted animal was being edited.
+
+2.	Summary Report: I also implemented the Summary Report feature. This calculates the total number of animals, average age, average recovery score, and the number of animals in each recovery status category. The report is saved to summary.txt and displayed in a separate form, frmSummary.
+
+How to Use it
+1.	Delete
+•	Select an animal record from the DataGridView.
+•	Click the Delete button.
+•	Choose Yes to confirm deletion or No to cancel.
+2.	Summary Report
+•	Click the Summary Report button.
+•	The report is generated and saved as summary.txt in the same folder as the application executable. The file is overwritten each time a new report is generated.
+•	The calculated results are displayed in frmSummary.
+•	If there are no animal records, the total will be 0, and the average age and recovery score will display as N/A, and each of the five status counts will be 0.
+
+Error handling
+1.	Delete:
+•	Shows a message asking the user to select a row if no record is selected, and no deletion takes place.
+•	Uses a confirmation dialog displaying the animal’s ID and name, allowing the user to choose Yes or No before deletion.
+•	Handles IOException if animals.txt cannot be updated (e.g. if the file is open in another application).
+•	Handles UnauthorizedAccessException if the user does not have permission to modify animals.txt. A message is displayed and the record is not deleted.
+
+2.	Summary Report:
+•	Handles IOException when summary.txt is being used by another application.
+•	Handles UnauthorizedAccessException when the user does not have permission to write the report file.
+•	Displays appropriate message boxes so the application does not crash.
+
+Important Methods
+•	btnDelete_Click() – Validates the selection, confirms deletion, removes the record from animals.txt, refreshes the DataGridView, and clears the form when necessary.
+•	CalculateSummary() – Calculates the total number of animals, average age, average recovery score, and status counts from the records currently loaded in the DataGridView.
+•	btnSummaryReport_Click() – Calls CalculateSummary(), creates the summary report, saves it to summary.txt, and opens frmSummary to display the results.
+Limitations
+•	Malformed records that already exist in animals.txt are not removed when another animal record is deleted.
+•	The summary is calculated from records successfully loaded into the DataGridView, so malformed records that were skipped during loading are not included in the report.
+•	The delete feature identifies records using Animal IDs therefore it relies on Animal IDs being unique. 
+
