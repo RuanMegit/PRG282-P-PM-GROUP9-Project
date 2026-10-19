@@ -48,16 +48,18 @@
   <ItemGroup>
     <Compile Include="Animal.cs" />
     <Compile Include="AnimalValidator.cs" />
+    <Compile Include="BusinessLogicLayer\LogicHandler.cs" />
+    <Compile Include="DataLayer\FileHandler.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSummary.cs">
+    <Compile Include="PresentationLayer\frmSummary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSummary.Designer.cs">
+    <Compile Include="PresentationLayer\frmSummary.Designer.cs">
       <DependentUpon>frmSummary.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -66,7 +68,7 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSummary.resx">
+    <EmbeddedResource Include="PresentationLayer\frmSummary.resx">
       <DependentUpon>frmSummary.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -91,5 +93,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
