@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using WildlifeRecordsSystem.BusinessLogicLayer;
+using WildlifeRecordsSystem.DataLayer;
 
 namespace WildlifeRecordsSystem
 {
@@ -54,8 +56,19 @@ namespace WildlifeRecordsSystem
                 // Requirement 2.5: Create empty file, show empty grid, no error.
                 if (!File.Exists(filePath))
                 {
-                    File.WriteAllText(filePath, string.Empty, Encoding.UTF8);
-                    return;
+                    string content =
+                    "WR-0001|Alex|Alpha Lion|12|92|Release-Ready|Pre-Release Camp\n" +
+                    "WR-0002|Marty|Zebra|4|67|Recovering|Outdoor Enclosure\n" +
+                    "this is a error line for requirements\n" +
+                    "WR-0003|Melan|Gerafe|7|51|Stable|Recovering Ward\n" +
+                    "WR-0004|Gloria|Hippo|21|58|Serious|High-Dependency Ward\n" +
+                    "WR-0005|Julian|Ring Tailed Lemur|1|10|Critical|Intensive Care Unit\n" +
+                    "WR-0006|Morty|Mouse Lemur|1|51|Stable|Recovering Ward\n" +
+                    "this is a error line for requirements\n" +
+                    "WR-0007|Skipper|Penguin|2|51|Stable|Recovering Ward\n" +
+                    "WR-0008|kowalski|Penguin|2|51|Stable|Recovering Ward\n";
+
+                    File.WriteAllText(filePath, content, Encoding.UTF8);
                 }
 
                 // Requirement 2.1: Load animals.txt and show every valid record.
@@ -143,34 +156,7 @@ namespace WildlifeRecordsSystem
         //Methods for Add, Update, Delete functionality
 
         //Method 1: to calculate the housing unit and status from recovery score without the user nedding to enter it (Add, Update)
-        public void StatusCalculation(int score, out string status, out string housingunit)
-        {
-            if (score <= 19)
-            {
-                status = "Critical";
-                housingunit = "Intensive Care Unit";
-            }
-            else if (score <= 39)
-            {
-                status = "Serious";
-                housingunit = "High-Dependency Ward";
-            }
-            else if (score <= 59)
-            {
-                status = "Stable";
-                housingunit = "Recovery Ward";
-            }
-            else if (score <= 79)
-            {
-                status = "Recovering";
-                housingunit = "Outdoor Enclosure";
-            }
-            else
-            {
-                status = "Release-Ready";
-                housingunit = "Pre-Release Camp";
-            }
-        }
+        LogicHandler lh = new LogicHandler();
 
         //Method 2: to clear user input text boxes to start over (Add, Update, Delete)
         private void ClearTextBoxes()
@@ -272,14 +258,12 @@ namespace WildlifeRecordsSystem
                 // score comes in as a string from the textbox and hase been validated as correct.
                 int scoreValue = int.Parse(score);
                 // now we call method to calculate the status and housing unit.
-                StatusCalculation(scoreValue, out string status, out string housingunit);
+
+                lh.StatusCalculation(scoreValue, out string status, out string housingunit);
                    
-                //Storing new line to animals.txt file
-                string newRecord = $"{normalizedId}|{name.Trim()}|{species.Trim()}|{age.Trim()}|{score.Trim()}|{status}|{housingunit}";
-
-                string filePath = Path.Combine(Application.StartupPath, "animals.txt");
-
-                File.AppendAllText(filePath,newRecord + Environment.NewLine,Encoding.UTF8);
+                //Storing new line to animals.txt file in filehandler method
+                FileHandler fh = new FileHandler();
+                fh.AddAnimalMethod(normalizedId, name.Trim(), species.Trim(), age.Trim(), score.Trim(), status, housingunit);
 
                 MessageBox.Show($"Animal {normalizedId} added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
@@ -315,10 +299,9 @@ namespace WildlifeRecordsSystem
                 {
                     try
                     {
-                        // Remove the record from animals.txt
-                        string filePath = Path.Combine(Application.StartupPath, "animals.txt");
-                        var lines = File.ReadAllLines(filePath, Encoding.UTF8).Where(line => !line.StartsWith(animalIdToDelete + "|", StringComparison.OrdinalIgnoreCase)).ToArray();
-                        File.WriteAllLines(filePath, lines, Encoding.UTF8);
+                        // Remove the record from animals.txt using filehandler method
+                        FileHandler fh = new FileHandler();
+                        fh.DeleteAnimalMethod(animalIdToDelete);
                     }
                     catch (IOException)
                     {
@@ -483,30 +466,16 @@ namespace WildlifeRecordsSystem
 
             //Calculation the status and housing unit automaticaly
             int scoreint = Int32.Parse(score);
-            StatusCalculation(scoreint, out string status, out string housingunit);
+            lh.StatusCalculation(scoreint, out string status, out string housingunit);
 
             //captures id again
             id = txtAnimalID.Text.Trim().ToUpper();
-            string newAnimalline = $"{id}|{name}|{species}|{age}|{score}|{status}|{housingunit}";
-
-            string path = Path.Combine(Application.StartupPath, "animals.txt"); //file path towards text file
 
             try
             {
-                string[] animal = File.ReadAllLines(path, Encoding.UTF8);  //read all lines
-
-                //Checks where the ID's match in the text file and the new changed animal values
-                for (int i = 0; i < animal.Length; i++)
-                {
-                    string[] part = animal[i].Split('|');
-
-                    if (string.Equals(part[0].Trim(), id, StringComparison.OrdinalIgnoreCase))
-                    {
-                        animal[i] = newAnimalline;
-                        break;
-                    }
-                }
-                File.WriteAllLines(path, animal, Encoding.UTF8);
+                // Update the record from animals.txt using filehandler method
+                FileHandler fh = new FileHandler();
+                fh.UpdateAnimalMethod(id, name.Trim(), species.Trim(), age, score, status, housingunit);
             }
             catch (FileNotFoundException)
             {
