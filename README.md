@@ -1,153 +1,255 @@
- Baobab Ridge Wildlife Rehabilitation Records System
+#  Baobab Ridge Wildlife Rehabilitation Records System
 
-PRG282-P-PM-GROUP9-Project
+**PRG282 – Programming Project | Group 9**
 
-A version-controlled C# Windows Forms application using text files, Git and GitHub.
+A version-controlled C# Windows Forms application for managing wildlife rehabilitation records using text-file storage, data validation, and Git/GitHub collaboration.
 
-This app helps Baobab Ridge keep track of the animals in its care. You can view, add, update, delete and summarise animal records. Records are stored in animals.txt.
+##  Project Overview
 
-Feature 1: View Animals, GitHub Setup and animals.txt
+The **Baobab Ridge Wildlife Rehabilitation Records System** is a desktop application designed to help users view, update, delete, and report on animal rehabilitation records.
 
-Ruan Megit
+The application uses a text file (`animals.txt`) to store animal information and a Windows Forms interface to display and manage records. It also includes input validation to help maintain data quality and prevent invalid or duplicate records from being saved.
 
-What I built
+This project demonstrates practical skills in C# development, file handling, exception handling, Windows Forms, data validation, and collaborative version control.
 
-Created the GitHub repository with the README, .gitignore and a blank form project.
-Added every member as a collaborator and created some of the starting branches.
-Created animals.txt with 8 valid and 2 invalid animal records.
-Linked every record to a row in the DataGridView with its column name.
-Helped clean up the other parts and remove duplication.
+##  Key Features
 
-How to use it
+| Feature | Description |
+|---|---|
+|  View Animal Records | Displays animal records in a DataGridView, including validation results. |
+|  Search Records | Finds an animal using its unique Animal ID. |
+|  Update Records | Allows existing animal information to be edited and saved permanently. |
+|  Delete Records | Removes selected animal records after confirmation. |
+|  Summary Report | Calculates animal statistics and recovery-status totals. |
+|  Data Validation | Checks records and input values to help prevent invalid or duplicate data. |
+|  Clear Form | Clears the input fields on the form. |
+|  Text-File Storage | Reads and updates animal information in `animals.txt` and writes reports to `summary.txt`. |
+|  Error Handling | Uses exception handling to manage common file and access errors. |
+|  Version Control | Uses Git and GitHub to support collaboration and source-code management. |
 
-Start the application. The animals load into the DataGridView automatically.
+##  Technologies Used
 
-Important methods
+- **C#** — application logic and functionality.
+- **Windows Forms** — desktop user interface.
+- **DataGridView** — displays animal records in a tabular format.
+- **Text files** — stores animal records and generated summary reports.
+- **Git** — version control and branch management.
+- **GitHub** — repository hosting and team collaboration.
+- **Validation and exception handling** — helps maintain data integrity and handle errors.
 
-Validator class: checks each line in animals.txt and decides if it is valid or invalid before it is displayed.
-Feature 2: Add Animal Record and Validation
+##  Getting Started
 
-Zukhanye Mayekiso (603121)
+### Prerequisites
 
-What I built
+- Windows operating system.
+- Visual Studio with the required C# and Windows Forms development tools.
+- Git, if you want to clone the repository or contribute to development.
 
-The Add feature, which captures a new animal record.
-Before saving, it checks that the ID format is correct, no required field is blank, age and recovery score are valid numbers in range, and the Animal ID doesn't already exist.
-If a check fails, a clear message is shown and nothing is written.
-If all checks pass, the record is added to animals.txt, the DataGridView refreshes and the input fields are cleared.
-The shared AnimalValidator class (now in the business logic layer), which keeps validation consistent across Add, Update and file loading.
+### Installation and Setup
 
-How to use it
+1. Clone the repository from GitHub or download the project files.
+2. Open the solution or project in Visual Studio.
+3. Confirm that `animals.txt` is available in the expected application directory.
+4. Build the project and resolve any environment-specific configuration issues.
+5. Run the Windows Forms application.
+6. View the animal records displayed in the DataGridView and explore the available features.
 
-Fill in all the input fields and click Add.
-If a field is invalid, fix it as the message says and click Add again.
-Animal IDs use the WR- format followed by the record number, e.g. WR-009.
+**Note:** The application relies on the text-file location expected by the code. Ensure that the file is available in the correct directory when running the application.
 
-Error handling
+##  How to Use the Application
 
-Invalid and duplicate records are rejected with a specific message.
-Numeric fields must be real numbers in range (age can't be negative).
-Try-Catch handles FileNotFoundException, DirectoryNotFoundException, IOException and UnauthorizedAccessException.
+### 1. View Animal Records
 
-Important methods
+Launch the application to load the animal records from `animals.txt`. The records are displayed in the DataGridView, with validation performed through the Validator class.
 
-btnAdd_Click(): runs the checks, then adds the record and refreshes the grid.
-ValidateAnimal(): checks ID format, required fields, numeric ranges and duplicates.
-AnimalValidator class: shared validation logic used by Add and file loading.
+The repository was initially populated with eight valid animal records and two invalid records to support testing of the record-validation functionality.
 
-Limitations
+### 2. Search for an Animal
 
-If the ID format changes, the validator must be updated.
-The duplicate check relies on Animal IDs being unique.
-A malformed record added to animals.txt by hand is only flagged when the file is loaded, not corrected.
-Feature 3: Update Animal Record
+1. Enter the animal's ID in the Animal ID field.
+2. Use the required `WR-` prefix followed by the record number.
+3. Click the Search button to locate the record.
 
-Angelo Badenhorst
+The search is not case-sensitive. Searching for a record automatically enters edit mode.
 
-What I built
+### 3. Update an Animal Record
 
-A search that finds a record by ID so its values can be changed.
-A Save Changes button that saves the edits permanently in the text file.
-A Clear button that clears all input boxes.
+1. Search for the animal you want to update, or select its row in the DataGridView.
+2. Edit the relevant fields.
+3. Click **Save Changes**.
+4. Allow the application to validate the updated information.
+5. If validation succeeds, the changes are saved to `animals.txt`.
 
-How to use it
+The update process checks the entered values to help prevent invalid or duplicate data.
 
-Search: enter the ID with the WR- prefix and number. It is not case sensitive.
-Save Changes: the program must be in edit mode, which you get by searching for a record or selecting one in the DataGridView. The values are validated for faulty or duplicate data and then saved.
-Clear: just click it.
+### 4. Clear the Form
 
-Error handling
+Click the **Clear** button to clear the input fields and prepare the form for another operation.
 
-Save Changes uses Try-Catch to handle file not found, directory not found, IO exception and unauthorized access.
+### 5. Delete an Animal Record
 
-Important methods
+1. Select the animal record in the DataGridView.
+2. Click the **Delete** button.
+3. Review the confirmation message.
+4. Select **Yes** to confirm deletion or **No** to cancel.
 
-EnterEditMode(): makes the AnimalID box read-only, disables Add, enables Delete and enables Save Changes.
-ExitEditMode(): makes the AnimalID box editable again, re-enables Add, disables Save Changes and clears the text boxes.
-LoadInfo(): loads a clicked DataGridView row into the input boxes and calls EnterEditMode().
-TryValidateUpdate(): validates the values entered for the update.
+After a confirmed deletion, the record is removed from `animals.txt`, the DataGridView is refreshed, and the form is cleared if the deleted record was being edited.
 
-Limitations
+### 6. Generate a Summary Report
 
-Search automatically puts you into edit mode.
-Feature 4: Delete Animal Record
+Use the Summary Report feature to calculate and display key rehabilitation statistics.
 
-Omphile Nthoesane (604593)
+The report includes:
 
-What I built
+- Total number of animals.
+- Average animal age.
+- Average recovery score.
+- Number of animals in each recovery-status category.
 
-Lets users permanently remove an animal record.
-Asks for confirmation first to prevent accidental deletion.
-Removes the record from animals.txt, refreshes the DataGridView and clears the form if that animal was being edited.
+The generated report is saved to `summary.txt` and displayed in a separate Windows Form named `frmSummary`.
 
-How to use it
+##  Validation and Error Handling
 
-Select a record in the DataGridView.
-Click Delete.
-Choose Yes to confirm or No to cancel.
+Data validation is an important part of the application because it helps protect the integrity of the animal records.
 
-Error handling
+### Record Validation
 
-If no row is selected, a message asks the user to select one and nothing is deleted.
-The confirmation shows the animal's ID and name.
-IOException (e.g. the file is open in another application): a message is shown and the record is not deleted.
-UnauthorizedAccessException (no permission): a message is shown and the record is not deleted.
+The Validator class checks the lines in `animals.txt` to determine whether records are valid. This validation is used when displaying records in the DataGridView.
 
-Important methods
+### Update Validation
 
-btnDelete_Click(): validates the selection, confirms, removes the record, refreshes the grid and clears the form.
+The `TryValidateUpdate()` method validates the values entered into the text boxes before an existing animal record is updated.
 
-Limitations
+This helps prevent faulty or duplicate information from being written to the file.
 
-Malformed records already in animals.txt are not removed.
-Deleting relies on Animal IDs being unique.
-Feature 5: Summary Report
+### Exception Handling
 
-Omphile Nthoesane (604593)
+The Save Changes functionality uses a `try-catch` block to handle common file-related errors, including:
 
-What I built
+- `FileNotFoundException` — the required file cannot be found.
+- `DirectoryNotFoundException` — the specified directory cannot be found.
+- `IOException` — an input/output operation fails.
+- `UnauthorizedAccessException` — the application does not have the required access permissions.
 
-Calculates the total number of animals, average age, average recovery score and the number of animals in each recovery status.
-Saves the report to summary.txt and shows it in a separate form, frmSummary.
+These checks help the application handle file errors more reliably.
 
-How to use it
+## ⚙️ Important Methods
 
-Click Summary Report.
-The report is saved as summary.txt in the same folder as the application executable and is overwritten each time.
-The results are shown in frmSummary.
-With no animal records, the total is 0, the average age and recovery score show N/A, and all five status counts are 0.
+### Update Feature — Angelo Badenhorst
 
-Error handling
+| Method | Purpose |
+|---|---|
+| `EnterEditMode()` | Makes the Animal ID field read-only, disables the Add button, enables the Delete button, and enables Save Changes. |
+| `ExitEditMode()` | Makes the Animal ID field editable, enables the Add button, enables the Delete button, disables Save Changes, and clears the text boxes. |
+| `LoadInfo()` | Loads the information from a selected DataGridView row into the input fields and enters edit mode. |
+| `TryValidateUpdate()` | Validates the entered values before the animal record is updated. |
 
-IOException when summary.txt is in use by another application.
-UnauthorizedAccessException when there is no permission to write the file.
-Message boxes are shown so the application does not crash.
+**Implementation note:** The Search button automatically enters edit mode, assuming the user intends to update the selected record.
 
-Important methods
+### Record Viewing and Repository Setup — Ruan Megit
 
-CalculateSummary(): calculates the totals, averages and status counts from the records in the DataGridView.
-btnSummaryReport_Click(): calls CalculateSummary(), saves summary.txt and opens frmSummary.
+The Validator class is used to validate animal records loaded from `animals.txt` before they are displayed in the DataGridView.
 
-Limitations
+The repository setup also included the initial README, `.gitignore`, blank Windows Forms project, collaborator access, development branches, and initial animal records. Repository cleanup included removing duplicated content.
 
-Only records loaded into the DataGridView are counted, so malformed records skipped on load are not included.
+### Delete and Summary Report — Omphile Nthoesane
+
+The Delete feature removes selected records after user confirmation and refreshes the displayed data.
+
+The Summary Report functionality calculates the specified statistics, saves them to `summary.txt`, and displays the report using `frmSummary`.
+
+##  Team Contributions
+
+### Angelo Badenhorst — Update Feature
+
+- Implemented the animal-record update functionality.
+- Added record searching by Animal ID.
+- Implemented edit-mode controls for the form.
+- Added Save Changes and Clear functionality.
+- Implemented validation and exception handling for updates.
+
+### Ruan Megit — GitHub Setup and View Feature
+
+- Created and configured the GitHub repository.
+- Added the README, `.gitignore`, initial project, collaborators, and development branches.
+- Created `animals.txt` and populated it with eight valid and two invalid test records.
+- Implemented the record-viewing functionality using the DataGridView.
+- Used the Validator class to check records.
+- Helped clean up duplicated content and improve project consistency.
+
+### Omphile Nthoesane (604593) — Delete and Summary Report
+
+- Implemented the Delete Animal Record feature.
+- Added a confirmation prompt to reduce accidental deletions.
+- Ensured the text file and DataGridView are updated after deletion.
+- Implemented the Summary Report calculations.
+- Saved generated statistics to `summary.txt`.
+- Created the separate `frmSummary` form to display the report.
+  
+##  Version Control and Collaboration
+
+Git and GitHub were used to manage the project source code and support team collaboration.
+
+The repository was configured with a README, `.gitignore`, collaborator access, and development branches. Team members contributed their respective features, helping organise the work and maintain a shared project codebase.
+
+This workflow demonstrates the importance of source control when developing an application as a group.
+
+##  Limitations
+
+- Animal records are stored in text files rather than a database.
+- The application depends on the correct location and availability of its text files.
+- Searching automatically enters edit mode, which may not be ideal when a user only wants to view a record.
+- Data integrity depends on the validation rules implemented in the application.
+- Text-file storage may become harder to manage as the number of records grows.
+
+##  Possible Future Improvements
+
+- Introduce a database for more scalable record storage.
+- Separate viewing and editing modes to make navigation clearer.
+- Improve search functionality with additional filters.
+- Add automated tests for record validation, updates, and deletions.
+- Improve user feedback for validation failures and file-access errors.
+- Add export options for summary reports.
+- Expand documentation with screenshots and a clearer installation guide.
+
+##  Learning Outcomes
+
+This project provides practical experience in:
+
+- Building desktop applications with C# and Windows Forms.
+- Reading, writing, and updating text files.
+- Validating user input and stored records.
+- Handling file-related exceptions.
+- Displaying and managing data using a DataGridView.
+- Implementing CRUD-style record-management operations.
+- Generating summary statistics and reports.
+- Collaborating through Git, GitHub, and branching workflows.
+
+##  Main Project Files
+
+| File or Component | Purpose |
+|---|---|
+| `animals.txt` | Stores animal rehabilitation records. |
+| `summary.txt` | Stores the generated summary report. |
+| `frmSummary` | Displays the summary report in a separate form. |
+| `DataGridView` | Presents animal records in a tabular view. |
+| `Validator` class | Validates animal records loaded from the text file. |
+| `EnterEditMode()` | Configures the form for editing a record. |
+| `ExitEditMode()` | Resets the form's editing state. |
+| `LoadInfo()` | Loads the selected record into the input fields. |
+| `TryValidateUpdate()` | Validates updated animal information. |
+
+*The table lists the files, forms, controls, and methods identified in the project description; their exact source-code paths may differ.*
+
+##  Conclusion
+
+The Baobab Ridge Wildlife Rehabilitation Records System brings together animal-record management, validation, file handling, reporting, and version control in a C# Windows Forms application.
+
+Through their individual contributions, the team developed key functionality for viewing, updating, deleting, and summarising animal records while gaining practical experience in collaborative software development.
+
+---
+
+**Project:** PRG282-P-PM-GROUP9-Project  
+**Course:** PRG282 — Programming  
+**Application:** Baobab Ridge Wildlife Rehabilitation Records System  
+**Repository:** Add your GitHub repository URL here.
